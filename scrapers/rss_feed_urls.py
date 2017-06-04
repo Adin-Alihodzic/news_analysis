@@ -125,7 +125,8 @@ while True:
 
     # Run script to upload datbase to S3 Bucket
     print('Backing up to S3 Bucket')
-    p = subprocess.Popen('/home/ubuntu/backup.sh', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    cwd = os.getcwd()
+    p = subprocess.Popen(cwd+'/backup_wsj.sh', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
     print('Finished backing up to S3 Bucket')
 

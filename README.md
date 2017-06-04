@@ -11,6 +11,10 @@ All past articles from the Wall Street Journal (WSJ) were available, so they wer
 Two sentiment libraries are used in this project; sentiwordnet and pattern. Sentiwordnet is used in python 2, while pattern is still in python 2.
 
 ## Ideas
+* How to determine how many features and topics to use in LDA
+* Determine whether the article is political
+* Use LDA in Spark to find topics of larger WSJ dataset
+  * Get topics week to week over 2016 and maybe even further
 * Post bias calculations to reddit
 * Post bias calculations to twitter
 * Web site that displays results and description of models

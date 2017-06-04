@@ -7,11 +7,15 @@ from pattern.en import parse, split, wordnet #must have sentiwordnet available
 import nltk
 from nltk.corpus import sentiwordnet as swn
 
+import sys
 
+reload(sys)
+sys.setdefaultencoding('utf8')
 
 
 from nltk.stem.wordnet import WordNetLemmatizer
 wnl = WordNetLemmatizer()
+
 def sentiment_wordnet(content):
     wordnet.sentiment.load()
     relevant_types = ['JJ', 'VB', 'RB'] #adjectives, verbs, adverbs
@@ -34,10 +38,6 @@ def sentiment_wordnet(content):
     sentiment = (s_pos/relevant_word_count, s_neg/relevant_word_count, s_obj/relevant_word_count, score)
     return sentiment
 
-import sys
-
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 def sentiment_wordnet2(content, top_words, word_probs):
     relevant_types = ['JJ', 'VB', 'RB'] #adjectives, verbs, adverbs

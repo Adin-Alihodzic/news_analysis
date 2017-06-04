@@ -1,0 +1,664 @@
+[INFO  - 2017-06-04T06:41:16.706Z] GhostDriver - Main - running on port 57263
+[INFO  - 2017-06-04T06:41:17.557Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Unknown; Linux x86_64) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2017-06-04T06:41:17.558Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.customHeaders:  - {}
+[INFO  - 2017-06-04T06:41:17.558Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"linux-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2017-06-04T06:41:17.558Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: cfe7df00-48f0-11e7-85fe-251c3cafb5fb
+[ERROR - 2017-06-04T06:41:44.213Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:41:44.214Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:41:44.233Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:41:44.233Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:41:44.239Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: Attempted to assign to readonly property.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:41:44.239Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  set (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  _areEnabled (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  b (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  (anonymous function) (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:42:36.070Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: BG2: Failed to connect to BlueGrass2 SignalR endpoint: https://wsjstream.wsj.net/bg2.  Will retry...
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:42:36.070Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (:23)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:42:45.067Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:42:45.067Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/fall-2015-womens-fashion-shows-things-we-loved-1426286487:132)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:42:46.043Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:42:46.043Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:05.583Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: BG2: Failed to connect to BlueGrass2 SignalR endpoint: https://wsjstream.wsj.net/bg2.  Will retry...
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:05.583Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (:23)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:07.769Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:07.770Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/on-the-road-with-the-cunninghams-1425997245:135)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:10.142Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:10.142Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:47.817Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: ReferenceError: Can't find variable: tracking
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:47.817Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  global code (https://graphicsweb.wsj.com/documents/MH370COUNTDOWN/?tracking=0:128)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:49.460Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:49.460Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:49.463Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:49.463Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:49.728Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: Attempted to assign to readonly property.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:49.728Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  set (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  _areEnabled (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  b (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  (anonymous function) (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:54.760Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:54.761Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/african-artists-to-watch-1426260230:133)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:56.277Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:45:56.277Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[INFO  - 2017-06-04T06:46:16.760Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
+[ERROR - 2017-06-04T06:46:55.285Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:46:55.285Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/u-s-europe-government-bond-yields-fall-on-ecb-bond-buying-1425994904:283)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:03.921Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:03.921Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/slideshow-apple-watch-macbook-event-1425932266:135)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:05.531Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:05.531Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:24)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.322Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.322Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.324Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.324Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.325Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.325Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.326Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.326Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.328Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:47:41.328Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:48:09.179Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:48:09.180Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/vladimir-putins-public-absence-stirs-russian-clamor-1426250376:297)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:50:02.919Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:50:02.919Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/will-ferrells-major-league-baseball-debut-1426258184:136)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:50:03.912Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:50:03.912Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[INFO  - 2017-06-04T06:51:16.767Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
+[ERROR - 2017-06-04T06:51:32.694Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:32.694Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/an-artists-haven-on-the-water-1425996294:136)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:33.760Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:33.760Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:56.080Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:56.080Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/photos-tokyos-postwar-reconstruction-1425984796:132)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:57.052Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:51:57.052Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:52:24.346Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:52:24.346Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/photos-tokyo-job-fair-for-college-students-1425889689:132)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:52:25.508Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:52:25.508Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:52:38.767Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:52:38.768Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/seymour-an-introduction-review-striking-resonant-chords-1426186052:323)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:15.466Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:15.466Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/snapchat-captures-fashion-week-1426098132:289)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.928Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttf has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.928Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.928Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter tts has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.929Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.929Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttse has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.929Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.931Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:25.931Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.199Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttf has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.199Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.199Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter tts has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.199Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.200Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttse has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.200Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.200Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.200Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.201Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttf has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.201Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.201Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter tts has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.201Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.201Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttse has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.201Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.203Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttf has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.203Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.203Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter tts has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.204Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.204Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: Custom parameter ttse has already been specified.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.204Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.250Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: Attempted to assign to readonly property.
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:26.250Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  set (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  _areEnabled (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  b (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+  (anonymous function) (https://d1z2jf7jlzjs58.cloudfront.net/code/ptrack-v0.8.1-engaged-time-slots-video.js:4)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:37.938Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:37.938Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/todays-house-of-the-day-a-11-3-million-house-in-chelsea-london-1425906704:136)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:38.762Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:38.762Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:55.980Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:55.980Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/2015-ford-f-150-photos-1426275524:136)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:56.963Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:53:56.964Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:54:16.608Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:54:16.608Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/the-story-behind-your-canceled-flight-1426093364:298)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:54:59.567Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:54:59.567Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/chappie-snags-lackluster-box-office-1425843390:294)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.612Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.612Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.624Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.624Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.626Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.627Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.629Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.629Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.637Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Exception in queued GPT command ReferenceError: Can't find variable: pxSegmentIDs
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:08.638Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  push (https://securepubads.g.doubleclick.net/gpt/pubads_impl_120.js:59)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:10.247Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Error setting up vidora timeout
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:10.247Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (:16)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:39.818Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:39.818Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/asia-house-of-the-day-a-highlands-retreat-in-the-philippinesphotos-1425952186:135)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:41.751Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Error: Script error for "jquery", needed by: jqueryxdomainrequest, jQueryPlugins/importantStyle, jQueryPlugins/waitUntilExists, util/unruly-jquery
+http://requirejs.org/docs/errors.html#scripterror
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:41.751Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  q (https://video.unrulymedia.com/native/native_v1.0.796-4-g065525d.js:44)
+  y (https://video.unrulymedia.com/native/native_v1.0.796-4-g065525d.js:48)
+  onScriptError (https://video.unrulymedia.com/native/native_v1.0.796-4-g065525d.js:67)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:43.537Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:55:43.537Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/arbitration-clauses-for-cards-checking-draw-criticism-1425960004:294)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:56:13.370Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:56:13.370Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/a-suburban-home-with-a-contemporary-feel-1426084503:136)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:56:14.608Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:56:14.608Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[INFO  - 2017-06-04T06:56:16.850Z] SessionManagerReqHand - _cleanupWindowlessSessions - Asynchronous Sessions clean-up phase starting NOW
+[ERROR - 2017-06-04T06:57:29.261Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:57:29.261Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/nasa-launches-four-spacecraft-to-study-magnetic-fields-of-earth-sun-1426218912:287)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:58:09.707Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:58:09.707Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/photos-services-for-cardinal-edward-egan-1425924516:136)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:58:10.777Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: Facebook Pixel Error: ReferenceError: Can't find variable: Set
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:58:10.778Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  fc (https://connect.facebook.net/en_US/fbevents.js:25)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:58:19.641Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - msg: TypeError: undefined is not an object (evaluating 'window.vidora.ready')
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2017-06-04T06:58:19.641Z] Session [cfe7df00-48f0-11e7-85fe-251c3cafb5fb] - page.onError - stack:
+  (anonymous function) (undefined:21)
+  (anonymous function) (:141)
+  success (:116)
+  fire (:975)
+  fireWith (:1085)
+  done (:7804)
+  callback (:8519)
+  nrWrapper (https://www.wsj.com/articles/new-ceo-tasked-with-lifting-credit-suisse-1426032348:291)
+
+  phantomjs://platform/console++.js:263 in error
