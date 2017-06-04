@@ -109,7 +109,7 @@ tf_vectorizer = CountVectorizer(max_df=0.95, min_df=2,
                                 stop_words='english')
 tf = tf_vectorizer.fit_transform(text)
 
-n_topics = 20
+n_topics = 8
 lda_model = LatentDirichletAllocation(n_topics=n_topics, max_iter=5,
                                       learning_method='online',
                                       learning_offset=50.,
@@ -181,9 +181,9 @@ for i in range(len(sentiment_by_topic.keys())):
     plt.subplot(4,5,i+1)
     score = []
     for topic in range(topics_mat.shape[0]):
-        score.append(sentiment_by_topic[url_names[i]][topic][3])
-    score = np.array(score)
-    score /= sum(np.abs(score))
+        score.append(sentiment_by_topic[url_names[i]][topic][0])
+    # score = np.array(score)
+    # score /= sum(np.abs(score))
     plt.bar(np.arange(len(score)), score, align='center')
     plt.ylabel('Score')
     plt.title('Score by Topic for '+url_names[i])

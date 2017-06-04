@@ -7,7 +7,7 @@ from gensim.models.hdpmodel import HdpModel
 url_names = ['cnn', 'abc', 'fox', 'nyt', 'reuters', 'wapo', 'huffpo', 'esquire', 'rollingstone', 'cbs', '538', 'washtimes']
 
 # df = pd.read_csv('../data/rss_feeds_new_data.csv')#, parse_dates=['date_published'])
-df = pd.read_csv('../data/wsj_articles_data.csv')
+df = pd.read_csv('../data/rss_feeds_new_data.csv')
 df_no_nan = df[pd.notnull(df['processed_text'])]
 documents = df_no_nan['processed_text'].values.tolist()
 
@@ -31,3 +31,5 @@ corpus = [dictionary.doc2bow(text) for text in texts]
 
 print('Working on HDP...')
 hdp = HdpModel(corpus, dictionary)
+
+print(len(hdp.print_topics(-1)))
