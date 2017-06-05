@@ -33,3 +33,16 @@ print('Working on HDP...')
 hdp = HdpModel(corpus, dictionary)
 
 print(len(hdp.print_topics(-1)))
+
+
+def topic_prob_extractor(hdp=None, topn=None):
+    topic_list = hdp.show_topics(-1, topn)
+    topics = [x[1] for x in topic_list]
+    split_list = [x[1] for x in topic_list]
+    weights = []
+    for lst in split_list:
+        weights.append([float(x.split('*')[0]) for x in lst.split(' + ')])
+    sums = [np.sum(x) for x in weights]
+    return pd.DataFrame({'topic_id' : topics, 'weight' : sums})
+
+topic_weights = topic_prob_extractor(hdp, 500)

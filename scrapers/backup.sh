@@ -12,10 +12,10 @@
 #    0 0 * * * /home/ubuntu/backup.sh > /home/ubuntu/backup.log
 
 # DB host (secondary preferred as to avoid impacting primary performance)
-HOST=db.example.com
+HOST=127.0.0.1
 
 # DB name
-DBNAME=rss_feeds
+DBNAME=$1
 
 # S3 bucket name
 BUCKET=dsiprojectdata
@@ -30,13 +30,13 @@ TIME=`/bin/date +%d-%m-%Y-%T`
 DEST=/home/$USER/tmp
 
 # Tar file of backup directory
-TAR=$DEST/../$TIME.tar
+TAR=$DEST/../$DBNAME.tar
 
 # Create backup dir (-p to avoid warning if already exists)
 /bin/mkdir -p $DEST
 
 # Log
-echo "Backing up $HOST/$DBNAME to s3://$BUCKET/ on $TIME";
+echo "Backing up $HOST/$DBNAME to s3://$BUCKET/ on $DBNAME";
 
 # Dump from mongodb host into backup directory
 /usr/bin/mongodump -h $HOST -d $DBNAME -o $DEST

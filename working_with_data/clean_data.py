@@ -46,14 +46,13 @@ def get_processed_text(article_text, remove_quotes=True):
     return texts
 
 
-def get_site_dict(db_name):
+def get_df(db_name):
     client = MongoClient()
     db = client[db_name]
 
     collection_names = db.collection_names()
     my_collection_names = [name for name in collection_names]
 
-    site_dict = dict({site: dict() for site in url_names})
     df = pd.DataFrame(columns=['article_text', 'author', 'date_published', 'headline', 'url', 'processed_text', 'source'])
     for collection_name in my_collection_names:
         if collection_name != 'system.indexes':
@@ -77,11 +76,8 @@ def get_site_dict(db_name):
                             df.loc[-1] = [article_text, author, date_published, headline, url, processed_text, source]  # adding a row
                             df.index = df.index + 1  # shifting index
                             df = df.sort()  # sorting by index
-
-                            site_dict[site][url] = article
                         except:
                             print('Problem with article in '+site)
-                print('Len of '+site+' is '+str(len(site_dict[site].keys())))
     return df
 
 def get_article_length_hist(df):
@@ -105,7 +101,7 @@ def parse_str(x):
     else:
         return str(x)
 
-def clean_cnn(df):
+def fix_cnn(df):
     new_df = df[df['source'] == 'cnn']
     new_article_text = []
     for article_text, url in zip(new_df['article_text'], new_df['url']):
@@ -117,7 +113,7 @@ def clean_cnn(df):
             tag1 = soup.find('div', attrs={'class': 'el__leafmedia el__leafmedia--sourced-paragraph'}).text
             tag2 = soup.find_all('div', attrs={'class': 'zn-body__paragraph speakable'})
             tag3 = soup.find_all('div', attrs={'class': 'zn-body__paragraph'})
-            temp_article_text = tag1+' /n '+parse_str(' \n '.join([line.text for line in tag2]))+parse_str(' \n '.join([line.text for line in tag3]))
+            temp_article_text = tag1+' /n '+str(' \n '.join([line.text for line in tag2]))+parse_str(' \n '.join([line.text for line in tag3]))
             new_article_text.append(temp_article_text)
         else:
             new_article_text.append(article_text)
@@ -125,77 +121,80 @@ def clean_cnn(df):
     df[df['source'] == 'cnn'] = new_df
     return df
 
+def clean_df(df):
+    # Fix CNN articles that only grabbed the Highlights
+    df = fix_cnn(df)
+    # Remove duplicates by url
+    df = df.drop_duplicates(subset='url')
+    # Below I get rid of large articles that could throw off my algorithms
+    # Remove two article types that were very long
+    # any url with speech was just a transcript of speeches
+    df = df[(df['source'] != 'ap') & (df['source'] != 'economist') & (df['source'] != 'vox') & (df['source'] != 'time') & (df['source'] != 'slate')]
 
-# takes in mongo database name and if you want to restore as arg
-db_name, restore = argv[1], argv[2]
+    df[df['source'] == 'wapo'] = df[(df['source'] == 'wapo') & (df['url'].str.contains('powerpost') == False) & (df['url'].str.contains('-speech-') == False)]
+    df[df['source'] == 'economist'] = df[(df['source'] == 'economist') & (df['url'].str.contains('transcript') == False)]
+    df[df['source'] == 'fox'] = df[(df['source'] == 'fox') & (df['article_text'].str.contains('Want FOX News Halftime Report in your inbox every day?') == False)]
+    df = df.dropna(how='all')
+    return df
 
-if restore in ['True', 'true', 'Yes', 'yes']:
-    print('Downloading mongo database from S3 Bucket')
-    p1 = subprocess.Popen(['s3cmd', 'sync', 's3://dsiprojectdata/'+db_name+'.tar', '/home/ian/Galvanize/project/working_with_data/'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out1, err1 = p1.communicate()
-
-    print('Unzipping file')
-    p2 = subprocess.Popen(['tar', '-xvf', db_name+'.tar'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out2, err2 = p2.communicate()
-
-    print('Saving as mongo database')
-    p3 = subprocess.Popen(['mongorestore', '--db', db_name, './'+db_name], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out3, err3 = p3.communicate()
-
-
-# Find minimum date in csv so we know where to start
-# df_prev = pd.read_csv('../data/'+str(db_name)+'_data.csv', parse_dates=False, index_col=0)
-# df_prev['date_published'] = df_prev['date_published'].apply(lambda x: parser.parse(x.split('|')[0]))
-# min_date_saved = min(df_prev['date_published']).to_pydatetime()
-#
-# min_date = datetime.date(2017, 5, 13)
-# while min_date > min_date_saved:
-#     min_date -= datetime.timedelta(days=7)
-# print(min_date)
-'''
-df = pd.read_csv('../data/'+str(db_name)+'_data.csv', parse_dates=False)
-get_article_length_hist(df)
-# df = clean_cnn(df)
-df = df[(df['url'].str.contains('powerpost') == False) & (df['url'].str.contains('-speech-') == False)]
-get_article_length_hist(df)
-df.to_csv('../data/'+str(db_name)+'_data.csv', index=False)
-'''
-
-df = get_site_dict(db_name)
-df = df.drop_duplicates(subset='url')
-# Fix CNN articles that only grabbed the Highlights
-df = clean_cnn(df)
-# Below I get rid of large articles that could throw off my algorithms
-# Remove two article types that were very long
-# any url with speech was just a transcript of speeches
-df = df[(df['source'] != 'ap') & (df['source'] != 'economist') & (df['source'] != 'vox') & (df['source'] != 'time') & (df['source'] != 'slate')]
-
-df[df['source'] == 'wapo'] = df[(df['source'] == 'wapo') & (df['url'].str.contains('powerpost') == False) & (df['url'].str.contains('-speech-') == False)]
-df[df['source'] == 'economist'] = df[(df['source'] == 'economist') & (df['url'].str.contains('transcript') == False)]
-df[df['source'] == 'fox'] = df[(df['source'] == 'fox') & (df['article_text'].str.contains('Want FOX News Halftime Report in your inbox every day?') == False)]
-df = df.dropna(how='all')
-df.to_csv('../data/'+str(db_name)+'_data.csv', index=False)
-
-new_df = df[df['source'] == '538']
-urls = []
-articles = []
-processeds = []
-for article, url, processed in zip(new_df['article_text'], new_df['url'], new_df['processed_text']):
-    if len(article.split()) > 4000:
-        urls.append(url)
-        articles.append(article)
-        processeds.append(processed)
+if __name__ == '__main__':
+    # takes in mongo database name and if you want to restore as arg
+    db_name, restore = argv[1]
 
 
-# for site in url_names:
-#     print(site+': '+str(len(site_dict[site].keys())))
+    # Find minimum date in csv so we know where to start
+    # df_prev = pd.read_csv('../data/'+str(db_name)+'_data.csv', parse_dates=False, index_col=0)
+    # df_prev['date_published'] = df_prev['date_published'].apply(lambda x: parser.parse(x.split('|')[0]))
+    # min_date_saved = min(df_prev['date_published']).to_pydatetime()
+    #
+    # min_date = datetime.date(2017, 5, 13)
+    # while min_date > min_date_saved:
+    #     min_date -= datetime.timedelta(days=7)
+    # print(min_date)
+    '''
+    df = pd.read_csv('../data/'+str(db_name)+'_data.csv', parse_dates=False)
+    get_article_length_hist(df)
+    # df = clean_cnn(df)
+    df = df[(df['url'].str.contains('powerpost') == False) & (df['url'].str.contains('-speech-') == False)]
+    get_article_length_hist(df)
+    df.to_csv('../data/'+str(db_name)+'_data.csv', index=False)
+    '''
 
-# for site in url_names:
-#     for url in site_dict[site].keys():
-#         if site_dict[site][url]['date_published'] == None:
-#             print(site+' date: None')
-#         else:
-#             print(site+' date: '+str(site_dict[site][url]['date_published']))
-#
-# with open('../pickles/site_dict.pkl', 'wb') as f:
-#     pickle.dump(site_dict, f, pickle.HIGHEST_PROTOCOL)
+    df = get_df(db_name)
+    df = df.drop_duplicates(subset='url')
+    # Fix CNN articles that only grabbed the Highlights
+    df = fix_cnn(df)
+    # Below I get rid of large articles that could throw off my algorithms
+    # Remove two article types that were very long
+    # any url with speech was just a transcript of speeches
+    df = df[(df['source'] != 'ap') & (df['source'] != 'economist') & (df['source'] != 'vox') & (df['source'] != 'time') & (df['source'] != 'slate')]
+
+    df[df['source'] == 'wapo'] = df[(df['source'] == 'wapo') & (df['url'].str.contains('powerpost') == False) & (df['url'].str.contains('-speech-') == False)]
+    df[df['source'] == 'economist'] = df[(df['source'] == 'economist') & (df['url'].str.contains('transcript') == False)]
+    df[df['source'] == 'fox'] = df[(df['source'] == 'fox') & (df['article_text'].str.contains('Want FOX News Halftime Report in your inbox every day?') == False)]
+    df = df.dropna(how='all')
+    df.to_csv('../data/'+str(db_name)+'_data.csv', index=False)
+
+    new_df = df[df['source'] == '538']
+    urls = []
+    articles = []
+    processeds = []
+    for article, url, processed in zip(new_df['article_text'], new_df['url'], new_df['processed_text']):
+        if len(article.split()) > 4000:
+            urls.append(url)
+            articles.append(article)
+            processeds.append(processed)
+
+
+    # for site in url_names:
+    #     print(site+': '+str(len(site_dict[site].keys())))
+
+    # for site in url_names:
+    #     for url in site_dict[site].keys():
+    #         if site_dict[site][url]['date_published'] == None:
+    #             print(site+' date: None')
+    #         else:
+    #             print(site+' date: '+str(site_dict[site][url]['date_published']))
+    #
+    # with open('../pickles/site_dict.pkl', 'wb') as f:
+    #     pickle.dump(site_dict, f, pickle.HIGHEST_PROTOCOL)
