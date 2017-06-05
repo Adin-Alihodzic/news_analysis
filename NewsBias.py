@@ -103,3 +103,11 @@ class NewsBias:
 
     def pickle_everything(self):
         pass
+
+if __name__ == '__main__':
+    nb = NewsBias()
+    df = nb.from_csv('rss_feeds_new.csv')
+    lda_model = nb.run_lda(df, max_features=1000, n_topics=20)
+    nb.visualize_lda(df)
+    df = nb.get_sentiment_of_words(df)
+    sentiment_by_topic = nb.get_sentiment_by_topic(df)
