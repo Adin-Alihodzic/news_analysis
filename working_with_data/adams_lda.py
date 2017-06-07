@@ -116,7 +116,7 @@ lda_model = LatentDirichletAllocation(n_topics=n_topics, max_iter=5,
                                       random_state=0)
 
 lda_model.fit(tf)
-vis_data = pyLDAvis.sklearn.prepare(lda_model,tf, tf_vectorizer, R=n_topics, n_jobs=-1)
+vis_data = pyLDAvis.sklearn.prepare(lda_model, tf, tf_vectorizer, R=n_topics, n_jobs=-1)
 pyLDAvis.show(vis_data)
 
 filename = '../pickles/all_words_data_model.pkl'
@@ -181,7 +181,7 @@ for i in range(len(sentiment_by_topic.keys())):
     plt.subplot(4,5,i+1)
     score = []
     for topic in range(topics_mat.shape[0]):
-        score.append(sentiment_by_topic[url_names[i]][topic][0])
+        score.append(sentiment_by_topic[url_names[i]][topic][3])
     # score = np.array(score)
     # score /= sum(np.abs(score))
     plt.bar(np.arange(len(score)), score, align='center')

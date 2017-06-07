@@ -4,7 +4,6 @@ import pandas as pd
 from pymongo import MongoClient
 from nltk.corpus import stopwords
 from string import printable
-from nltk.stem.wordnet import WordNetLemmatizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.tokenize import word_tokenize
 from sys import argv
@@ -24,26 +23,49 @@ import re
 # url_names = ['cnn', 'abc', 'fox', 'nyt', 'ap', 'reuters', 'wapo', 'economist', 'huffpo', 'esquire', 'rollingstone', 'cbs', '538', 'vox', 'time', 'slate', 'washtimes']
 # These sites are strictly political (doesn't get rid of much data as those sites didn't have many articles)
 url_names = ['cnn', 'abc', 'fox', 'nyt', 'reuters', 'wapo', 'huffpo', 'esquire', 'rollingstone', 'cbs', '538', 'washtimes']
+words_to_remove = ['http', 'com', '_', '__', '___']
 
 
 # Remove stop words and lemmatize
-def get_processed_text(article_text, remove_quotes=True):
-    if remove_quotes:
-        article_text = re.sub('“.*?”', '', article_text)
-        article_text = re.sub('“.*?”', '', article_text)
-    tokenizer = RegexpTokenizer(r'\w+')
-    raw = article_text.lower()
-    tokens = tokenizer.tokenize(raw)
+def get_processed_text(article_text):
+    quotes1 = ' '.join(re.findall('“.*?”', article_text))
+    quotes2 = ' '.join(re.findall('".*?"', article_text))
+    quotes = quotes1 + quotes2
 
+    tweets = ' '.join(re.findall('\n\n.*?@', article_text))+' '+' '.join(re.findall('\n\n@.*?@', article_text))
+
+    article_text = re.sub('\n\n.*?@', '', article_text)
+    article_text = re.sub('\n\n@.*?@', '', article_text)
+    # Remove tweet
+    article_text = ' '.join([word for word in article_text.split(' ') if not word.startswith('(@') and not word.startswith('http')])
+
+    article_text = re.sub('“.*?”', '', article_text)
+    article_text = re.sub('".*?"', '', article_text)
+
+    tokenizer = RegexpTokenizer(r'\w+')
     # create English stop words list
     sw = set(stopwords.words('english'))
-    # remove stop words from tokens
-    stopped_tokens = [i for i in tokens if not i in sw and i not in ['http', 'com', '_', '__', '___']]
-
     wordnet = WordNetLemmatizer()
+
+    article_text = article_text.lower()
+    quotes = quotes.lower()
+    tweets = tweets.lower()
+
+    article_text_tokens = tokenizer.tokenize(article_text)
+    quotes_tokens = tokenizer.tokenize(quotes)
+    tweets_tokens = tokenizer.tokenize(tweets)
+
+    # remove stop words, unwanted words, tweet handles, links from tokens
+    article_text_stopped_tokens = [i for i in article_text_tokens if i not in sw and i not in words_to_remove]
+    quotes_stopped_tokens = [i for i in quotes_tokens if not i in sw and i not in words_to_remove]
+    tweets_stopped_tokens = [i for i in tweets_tokens if not i in sw and i not in words_to_remove]
+
     # stem token
-    texts = " ".join([wordnet.lemmatize(i) for i in stopped_tokens])
-    return texts
+    article_text = " ".join([wordnet.lemmatize(i) for i in article_text_stopped_tokens])
+    quotes = " ".join([wordnet.lemmatize(i) for i in quotes_stopped_tokens])
+    tweets = " ".join([wordnet.lemmatize(i) for i in tweets_stopped_tokens])
+
+    return article_text, quotes, tweets
 
 
 def get_df(db_name):
@@ -53,7 +75,7 @@ def get_df(db_name):
     collection_names = db.collection_names()
     my_collection_names = [name for name in collection_names]
 
-    df = pd.DataFrame(columns=['article_text', 'author', 'date_published', 'headline', 'url', 'processed_text', 'source'])
+    df = pd.DataFrame(columns=['article_text', 'author', 'date_published', 'headline', 'url', 'processed_text', 'processed_quote', 'processed_tweet', 'source'])
     for collection_name in my_collection_names:
         if collection_name != 'system.indexes':
             site = [name for name in url_names if collection_name.startswith(name)]
@@ -71,9 +93,12 @@ def get_df(db_name):
                             date_published = article['date_published']
                             author = article['author']
                             article_text = article['article_text']
-                            processed_text = get_processed_text(article_text, remove_quotes=True)
+                            processed_text, processed_quote, processed_tweet = get_processed_text(article_text)
+                            # check is quote is nan
+                            if type(processed_quote) == float:
+                                processed_quote = ''
                             # df.append(pd.Series([article_text, author, date_published, headline, url, processed_text, source]), ignore_index=True)
-                            df.loc[-1] = [article_text, author, date_published, headline, url, processed_text, source]  # adding a row
+                            df.loc[-1] = [article_text, author, date_published, headline, url, processed_text, processed_quote, processed_tweet, source]  # adding a row
                             df.index = df.index + 1  # shifting index
                             df = df.sort()  # sorting by index
                         except:
@@ -101,29 +126,69 @@ def parse_str(x):
     else:
         return str(x)
 
-def fix_cnn(df):
-    new_df = df[df['source'] == 'cnn']
-    new_article_text = []
-    for article_text, url in zip(new_df['article_text'], new_df['url']):
-        if article_text.startswith('Story highlights'):
-            print('Fixing article...')
-            result = requests.get(url)
-            soup = BeautifulSoup(result.content, 'html.parser')
+# This goes through every cnn article and uses BeautifulSoup to get text instead of newspaper
+def fix_cnn(db_name):
+    client = MongoClient()
+    db = client[db_name]
 
-            tag1 = soup.find('div', attrs={'class': 'el__leafmedia el__leafmedia--sourced-paragraph'}).text
-            tag2 = soup.find_all('div', attrs={'class': 'zn-body__paragraph speakable'})
-            tag3 = soup.find_all('div', attrs={'class': 'zn-body__paragraph'})
-            temp_article_text = tag1+' /n '+str(' \n '.join([line.text for line in tag2]))+parse_str(' \n '.join([line.text for line in tag3]))
-            new_article_text.append(temp_article_text)
-        else:
-            new_article_text.append(article_text)
-    new_df['article_text'] = new_article_text
-    df[df['source'] == 'cnn'] = new_df
-    return df
+    collection_names = db.collection_names()
+    my_collection_names = [name for name in collection_names if name.startswith('cnn')]
+
+    for collection_name in my_collection_names:
+        for article in db[collection_name].find():
+            try:
+                url = article['url']
+                result = requests.get(url)
+                soup = BeautifulSoup(result.content, 'html.parser')
+
+                tag1 = soup.find('div', attrs={'class': 'el__leafmedia el__leafmedia--sourced-paragraph'}).text
+                tag2 = soup.find_all('div', attrs={'class': 'zn-body__paragraph speakable'})
+                tag3 = soup.find_all('div', attrs={'class': 'zn-body__paragraph'})
+                new_article_text = tag1+' /n '+parse_str(' \n '.join([line.text for line in tag2]))+parse_str(' \n '.join([line.text for line in tag3]))
+                db[collection_name].update_one({
+                          '_id': article['_id']
+                        },{
+                          '$set': {
+                            'article_text': new_article_text
+                          }
+                        }, upsert=False)
+            except:
+                print('Problem with article! Removing!')
+                print(url)
+                db[collection_name].remove({"url": url})
+
+
+# This goes through every huffpo article and uses BeautifulSoup to get text instead of newspaper
+def fix_huffpo(db_name):
+    client = MongoClient()
+    db = client[db_name]
+
+    collection_names = db.collection_names()
+    my_collection_names = [name for name in collection_names if name.startswith('cnn')]
+
+    for collection_name in my_collection_names:
+        for article in db[collection_name].find():
+            try:
+                url = article['url']
+                result = requests.get(url)
+                soup = BeautifulSoup(result.content, 'html.parser')
+
+                tag = soup.find_all('div', attrs={'class': 'content-list-component bn-content-list-text text'})
+                new_article_text = parse_str(' \n '.join([line.text for line in tag]))
+                db[collection_name].update_one({
+                          '_id': article['_id']
+                        },{
+                          '$set': {
+                            'article_text': new_article_text
+                          }
+                        }, upsert=False)
+            except:
+                print('Problem with article! Removing!')
+                print(url)
+                db[collection_name].remove({"url": url})
+
 
 def clean_df(df):
-    # Fix CNN articles that only grabbed the Highlights
-    df = fix_cnn(df)
     # Remove duplicates by url
     df = df.drop_duplicates(subset='url')
     # Below I get rid of large articles that could throw off my algorithms
@@ -134,6 +199,10 @@ def clean_df(df):
     df[df['source'] == 'wapo'] = df[(df['source'] == 'wapo') & (df['url'].str.contains('powerpost') == False) & (df['url'].str.contains('-speech-') == False)]
     df[df['source'] == 'economist'] = df[(df['source'] == 'economist') & (df['url'].str.contains('transcript') == False)]
     df[df['source'] == 'fox'] = df[(df['source'] == 'fox') & (df['article_text'].str.contains('Want FOX News Halftime Report in your inbox every day?') == False)]
+    df[df['source'] == 'esquire'] = df[(df['source'] == 'esquire') & (df['url'].str.contains('-gallery-') == False)]
+
+    # Can't have null values in text
+    df = df[pd.notnull(df['processed_text'])]
     df = df.dropna(how='all')
     return df
 
