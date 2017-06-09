@@ -23,11 +23,13 @@ def add_to_mongo(tab, url, url_name):
             a.download()
             attempt += 1
         if attempt >= 10:
-            return 'Article would not download!'
+            print('Article would not download!')
+            return False
         if a.is_downloaded:
             a.parse()
         else:
-            return 'Article would not download!'
+            print('Article would not download!')
+            return False
     except:
         return 'Article would not download!'
     try:
@@ -56,7 +58,7 @@ def add_to_mongo(tab, url, url_name):
               'author': author,
               'article_text': article_text}
     tab.insert_one(insert)
-    return False
+    return True
 
 
 def already_exists(tab, url):
