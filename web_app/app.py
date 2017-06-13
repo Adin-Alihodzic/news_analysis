@@ -22,8 +22,9 @@ import nltk
 from nltk.corpus import sentiwordnet as swn
 
 sys.path.append('/home/ian/Galvanize/news_bias/working_with_data2')
-from data_exploration import process_articles
+from make_df import process_articles
 from sentiment_analysis import article_sentiment
+from bokeh_plotting import make_plot
 sys.path.append('/home/ian/Galvanize/news_bias/web_app')
 
 app = Flask(__name__)
@@ -35,12 +36,13 @@ app = Flask(__name__)
 # tab = db['predicted_events']
 
 
-def get_components(topic):
+def get_components(topic_dict, topic):
     with open('bokeh_plots/components_dict.pkl', 'rb') as f:
         components_dict = pickle.load(f)
     script = components_dict[topic]['script']
     div = components_dict[topic]['div']
     return script, div
+
 
 def get_article(url):
     try:
@@ -162,10 +164,10 @@ def predict():
             data = {'article_text': article_text, 'headline': headline}
             df = pd.DataFrame(data, index=[0])
 
-            topic_texts, sentiment_texts = process_articles(df)
+            topic_texts, sentiment_texts, quote_texts, tweet_texts = process_articles(df)
 
             pos, neg, obj = get_article_sentiment(topic_texts, sentiment_texts)
-            with open('../working_with_data/lda_model.pkl', 'rb') as f:
+            with open('../pickles/lda_model.pkl', 'rb') as f:
                 lda_model = pickle.load(f)
 
             article_bow = lda_model.id2word.doc2bow(topic_texts[0])
@@ -207,11 +209,15 @@ def graphs():
 def graphs_input():
     if request.method == 'POST':
         topic = int(request.form['topic'])
-        f = codecs.open("plots/pyLDAvis_40_topics.html", 'r')
-        pyLDAvis_html = f.read()
         # return render_template('graphs.html', plot='bokeh_plots/topic'+str(selectedValue)+'.html')
-        script, div = get_components(topic=topic)
+        # script, div = get_components(topic=topic)
     # return render_template('graphs.html', plot='./bokeh_plots/topic0.html')
+
+        with open('../pickles/topic_dict.pkl', 'rb') as f:
+            topic_dict = pickle.load(f)
+
+        script, div = make_plot(topic_dict, topic)
+        # topic_dict[topic]
 
         js_resources = INLINE.render_js()
         css_resources = INLINE.render_css()
