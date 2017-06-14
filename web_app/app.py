@@ -11,6 +11,8 @@ import codecs
 from newspaper import Article
 from gensim.summarization import summarize
 import datetime
+import ast
+import numpy as np
 
 from flask import Flask, render_template, request
 import webbrowser, threading, os
@@ -24,7 +26,7 @@ from nltk.corpus import sentiwordnet as swn
 sys.path.append('/home/ian/Galvanize/news_bias/working_with_data2')
 from make_df import process_articles
 from sentiment_analysis import article_sentiment
-from bokeh_plotting import make_plot
+from bokeh_plotting import make_bokeh_plot
 sys.path.append('/home/ian/Galvanize/news_bias/web_app')
 
 app = Flask(__name__)
@@ -167,6 +169,8 @@ def predict():
             topic_texts, sentiment_texts, quote_texts, tweet_texts = process_articles(df)
 
             pos, neg, obj = get_article_sentiment(topic_texts, sentiment_texts)
+            score = (pos+neg)*(1-obj)
+
             with open('../pickles/lda_model.pkl', 'rb') as f:
                 lda_model = pickle.load(f)
 
@@ -182,9 +186,37 @@ def predict():
                     max_topic = topic
                     max_prob = prob
 
+            with open('../pickles/topic_dict.pkl', 'rb') as f:
+                topic_dict = pickle.load(f)
 
+            pos_all = []
+            neg_all = []
+            obj_all = []
+            score_all = []
+            for pos_score, neg_score, obj_score in zip(topic_dict[topic]['pos'],topic_dict[topic]['neg'],topic_dict[topic]['obj']):
+                pos_all.append(pos_score)
+                neg_all.append(neg_score)
+                obj_all.append(obj_score)
+                score_all.append((pos_score+neg_score)*(1-obj_score))
 
-            return render_template('prediction_worked.html', article_text=article_text, headline=headline, author=author, date_published=date_published, summary=summary, pos=pos, neg=neg, obj=obj, topic=max_topic, topic_prob=max_prob)
+            pos_mean, neg_mean, obj_mean, score_mean = np.mean(pos_all), np.mean(neg_all), np.mean(obj_all), np.mean(score_all)
+
+            return render_template('prediction_worked.html',
+                                    article_text=article_text,
+                                    headline=headline,
+                                    author=author,
+                                    date_published=date_published,
+                                    summary=summary,
+                                    pos="{0:.3f}".format(pos),
+                                    neg="{0:.3f}".format(neg),
+                                    obj="{0:.3f}".format(obj),
+                                    score="{0:.3f}".format(score),
+                                    pos_mean="{0:.3f}".format(pos_mean),
+                                    neg_mean="{0:.3f}".format(neg_mean),
+                                    obj_mean="{0:.3f}".format(obj_mean),
+                                    score_mean="{0:.3f}".format(score_mean),
+                                    topic=max_topic,
+                                    topic_prob=max_prob)
         else:
 
             return render_template('prediction_failed.html')
@@ -216,8 +248,36 @@ def graphs_input():
         with open('../pickles/topic_dict.pkl', 'rb') as f:
             topic_dict = pickle.load(f)
 
-        script, div = make_plot(topic_dict, topic)
-        # topic_dict[topic]
+        script, div = make_bokeh_plot(topic_dict, topic)
+
+        anger_tones = []
+        disgust_tones = []
+        fear_tones = []
+        joy_tones = []
+        sadness_tones = []
+        analytical_score = []
+
+        tones = {'Anger': []}
+
+        for tone in topic_dict[topic]['tones']:
+            tone = ast.literal_eval(tone)
+            anger_tones.append(tone[0]['Anger'])
+            disgust_tones.append(tone[0]['Disgust'])
+            fear_tones.append(tone[0]['Fear'])
+            joy_tones.append(tone[0]['Joy'])
+            sadness_tones.append(tone[0]['Sadness'])
+
+        tone_mean = []
+        for i in range(5):
+            tone_mean.append(np.mean(anger_tones))
+            tone_mean.append(np.mean(disgust_tones))
+            tone_mean.append(np.mean(fear_tones))
+            tone_mean.append(np.mean(joy_tones))
+            tone_mean.append(np.mean(sadness_tones))
+
+        colors = ['red', 'green', 'purple', 'yellow', 'blue']
+        tone = ['Anger', 'Disgust', 'Fear', 'Joy', 'Sadness']
+        idx = np.argmax(tone_mean)
 
         js_resources = INLINE.render_js()
         css_resources = INLINE.render_css()
@@ -228,7 +288,12 @@ def graphs_input():
                                 script=script,
                                 div=div,
                                 topic_num=topic,
-                                word_cloud='<img src="../static/img/wordclouds/wordcloud_topic'+str(topic)+'.png" style="width: 100%; display:inline-block;"/>')
+                                word_cloud='src="../static/img/wordclouds/wordcloud_topic'+str(topic)+'.png"',
+                                mood_plot='src="../static/img/mood_plots/mood_plot_by_topic'+str(topic)+'.png"',
+                                pos_neg_plot='src="../static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(topic)+'.png"',
+                                tone_mean=tone_mean[idx],
+                                tone=tone[idx],
+                                color='color="'+colors[idx]+'"')
         return encode_utf8(html)
 
 # about page

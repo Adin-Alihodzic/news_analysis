@@ -35,40 +35,108 @@
     {{ css_resources|indent(4)|safe }}
 
   </head>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
 
   <body>
-  <div class="container">
 
+  <div class="container-fluid text-left">
+    <div class="row content">
+      <div class="col-sm-2 sidenav">
         <form action = "/graphs" >
             <ul >
-                <input type ="submit" value="Go Back" />
+                <input type ="submit" value="Go to Topic Selector" />
             </ul>
         </form>
-
         <form action = "/graphs_input" method="POST" >
             <ul >
-                Input a Different Topic: <input name="topic" type ="number" />
+                Input a Different Topic: <input name="topic" type ="number" style="width: 60px" />
                 <input type ="submit" value="submit" /> </li>
             </ul>
         </form>
+      </div>
+      <div class="col-sm-8 text-left">
+        <h1 align="center">Topic {{ topic_num }}</h1>
+        <p>
+          This page is dedicated to Topic {{ topic_num }}. I have decided not to label these topics in an attempt to be as subjective as possible.
+          I leave it up to you to decide what this topic is about.
+          Below are several plots and images, such as an interactive plot and a word cloud, to help you with that as well as show you how news sites and articles discuss this topic.
+        </p>
 
-        <h2 align="center">Topic {{ topic_num }}</h2>
+        <h2 align="center">Interactive Plot</h2>
+        <p>
+          The following plot was created in Bokeh.
+          The tab "By Article" plots the Anaytical Score of an article vs. the Overall Score of an article.
+          The tab "By Site" plots the mean of the Anaytical Score vs. the mean of the Overall Score for each site and has an ellipse around it indicating the standard deviation of the two variables.
+          The Analytical score was determined using IBM Watson's Tone Analyzer. To learn more about that program please visit
+          <a href="https://www.ibm.com/watson/developercloud/doc/tone-analyzer/science.html">their website</a>
+          or visit my <a href="https://github.com/iamianM/news_analysis">github</a>, where I go into depth about how I generated these plots.
+          The Overall score was determined using SentiWordNet. This is a state-of-the-art sentiment classification library, which determines a words positive, negative and objective score.
+          More about how it works can be found <a href="http://nmis.isti.cnr.it/sebastiani/Publications/LREC10.pdf">here</a> or at my <a href="https://github.com/iamianM/news_analysis">github</a>.
+          The Overall score is determined using the equation: \[ \texttt{overall_score} = (\texttt{positive_score} - \texttt{negative_score}) * (1 - \texttt{objective_score}) \]
+        </p>
+        <p>
+          The plot below is interactive. At the top left, you can switch between the "By Article" and "By Site" tabs. At the top left is the toolbar.
+          Toggle these buttons on and off by clicking them. The buttons from left to right are: Pan, Wheel Zoom, Tap, and Hover. All are automatically set on except Wheel Zoom.
+          Pan allows you to move the graph around by clicking and moving you mouse. Wheel Zoom allows you to zoom in and out using the wheel on your mouse.
+          Tap allows you to open the articles url by clicking on it. Lastly, Hover shows you atributes about each article when you hover over it.
+          To the right of the graph you will see a Slider and a Checkbox Group. The slider allows you to change the probability threshold each article must have in relation to this topic.
+          Each article has a certain probability of being in each topic you saw on the Topic Choice page. The probability of each article being in this topic is visualized by the size of each articles bubble.
+          You will see as you move the Topic Probability slider closer to 1, the smaller bubbles will disappear. The checkbox allows you to select which site's articles you would like to view.
+          As you unselect site's their article bubble's will disappear. Clicking the site's checkbox again will make the site's bubbles reappear. The two tabs have the same interactivity except that the "By Site" tab does not have a slider and checkbox group.
+        </p>
 
-        <div style="width: 50%; display: inline-block;">
+        <div style="width: 85%; display: inline-block;">
             {{ div | safe }}
             {{ script | safe }}
         </div>
+        <hr>
 
-        <h2>Word Cloud for Topic {{ topic_num }}</h2>
-        {{ word_cloud | safe }}
+        <h2>Mood: This Topic's Mood is <font size="10" {{ color }}>{{ tone }}</font></h2>
+        <p>
+          The average mood per article for this topic was {{ tone }}, with a probability of {{ tone_mean }}.
+          This mood was found from the IBM Watson Tone Analyzer. As well as determining the analytical score used above, it also determines emotional tones.
+          These emotional tones are Anger, Fear, Disgust, Sadness and Joy (and their corresponding colors in the graph: Red, Purple, Green, Blue and Yellow).
+          These tones are based on the theory of research pscholinguistics, a field of research that explores the relationship between linguistic behavior and psychological theories.
+        </p>
+        <p>
+          The plot below is a stacked bar chart of all mood scores per article for this topic. The scores were sorted for a better representation.
+        </p>
+        <img {{ mood_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
 
-  </div><!-- /.container -->
+        <h2>Positive/Negative Scores</h2>
+        <p>
+          Below is a bar chart of the positive score (blue) for each article going up and the negative score (red) going down.
+          These scores were found by summing the positive together and summing the negative scores together for each sentiment word in an article for this topic.
+          The sentiment words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
+        </p>
+        <img {{ pos_neg_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
+
+        <h2>Word Cloud</h2>
+        <p>
+          Below is a Word Cloud of the topic words for this topic.
+          The topic words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
+        </p>
+        <img {{ word_cloud | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
+      </div>
+      <div class="col-sm-2 sidenav">
+        <div class="well">
+          <p>ADS</p>
+        </div>
+        <div class="well">
+          <p>ADS</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
-                <a class="navbar-brand">Is it Legit??</a>
+                <a class="navbar-brand">Topic {{ topic_num }}</a>
             </div>
             <div id="navbar" class="collapse navbar-collapse">
               <ul class="nav navbar-nav">
@@ -76,10 +144,10 @@
                     <a href="/">Home</a>
                 </li>
                 <li>
-                    <a href="/input">Predict</a>
+                    <a href="/graphs">Topic Selector</a>
                 </li>
                 <li>
-                    <a href="/graphs">Graphs</a>
+                    <a href="/input">Predict</a>
                 </li>
                 <li>
                     <a href="/about">About</a>
@@ -92,7 +160,9 @@
       </div>
     </nav>
 
-
+    <footer class="container-fluid text-center">
+      <p>Footer Text</p>
+    </footer>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->

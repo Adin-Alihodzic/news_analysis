@@ -97,21 +97,33 @@ class NewsAnalysis:
 
         return df
 
-    def make_hists(self, df):
-        '''Gets article lengths by site and saves histogram'''
-        fig1, fig2 = all_length_hist(df, self.topic_texts, self.sentiment_texts, self.quote_texts, self.tweet_texts)
-        fig1.savefig('web_app/static/img/topic_sent_length_hist.png')
-        fig2.savefig('web_app/static/img/quote_tweet_length_hist.png')
+    def make_plots(self, df):
+        '''Makes all plots used in web app'''
+        # Length Histograms
+        topic_length_hist, quote_length_hist = all_length_hist(df, self.topic_texts, self.sentiment_texts, self.quote_texts, self.tweet_texts)
+        topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist.png')
+        quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist.png')
 
-    def make_mood_plots():
-        figs = mood_plots(self.topic_dict)
-        for i,fig in enumerate(figs):
-            fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'.png')
+        # Mood Bar Graphs
+        mood_figs = mood_plots(self.topic_dict)
+        for i,mood_fig in enumerate(mood_figs):
+            mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'.png')
 
-    def make_pos_neg_plots():
-        figs = mood_plots(self.topic_dict)
-        for i,fig in enumerate(figs):
-            fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'.png')
+        # Positive/Negative Bar Charts
+        pos_neg_figs = pos_neg_plot(self.topic_dict)
+        for i,pos_neg_fig in enumerate(pos_neg_figs):
+            pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'.png')
+
+        # Bokeh plots
+        components_dict = [topic: {'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
+        for topic in range(self.lda_model.num_topics):
+            components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
+        pickle.dump(components_dict, open('web_app/bokeh_plots/components_dict.pkl', 'wb'))
+
+        # Word Clouds
+        cloud_figs = make_clouds(self.topic_texts, self.lda_model)
+        for i,cloud_fig in enumerate(cloud_figs):
+            cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(t)+'.png')
 
     def run_lda_model(self, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.7, K=15, T=150, passes=20, iterations=400):
         """
@@ -137,6 +149,9 @@ class NewsAnalysis:
 
         self.lda_model, vis_data, fig = run_lda(self.topic_texts, self.dictionary, self.corpus, topn=topn,
                             num_topics=num_topics, weight_threshold=weight_threshold, K=K, T=T, passes=20, iterations=400)
+
+
+        pickle.dump(lda_model, open('pickles/lda_model.pkl', 'wb'))
 
         pyLDAvis.save_html(vis_data, 'web_app/plots/pyLDAvis_'+lda_model.num_topics+'_topics.html')
 
@@ -207,8 +222,8 @@ if __name__ == '__main__':
     pickle.dump(lda_model, open('pickles/lda_model.pkl', 'wb'))
 
     print('Making topic dictionary model. This will also take awhile...')
-    topic_dict = get_topic_values()
+    topic_dict = get_topic_values(df)
     pickle.dump(topic_dict, open('pickles/topic_dict.pkl', 'wb'))
 
     print('Making Bokeh Plots and Word Clouds')
-    make_plots_and_clouds()
+    make_plots()

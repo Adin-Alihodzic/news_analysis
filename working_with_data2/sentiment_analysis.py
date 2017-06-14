@@ -132,7 +132,6 @@ def article_topics_and_topic_coverage(model, topic_texts, tokenized=False):
     plt.xlabel('Topic')
     plt.ylabel('Coverage')
     plt.title('Coverage by Topic')
-    # plt.savefig('../web_app/static/img/topic_coverage.png')
 
     return all_article_topics, fig
 

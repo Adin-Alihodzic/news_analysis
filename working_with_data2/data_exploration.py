@@ -372,10 +372,7 @@ def run_lda(topic_texts, dictionary, corpus, topn=10000, num_topics=None, weight
                            iterations=iterations, \
                            passes=passes, eval_every=eval_every)
 
-    pickle.dump(lda_model, open('../pickles/lda_model.pkl', 'wb'))
-
     vis_data = pyLDAvis.gensim.prepare(lda_model, corpus, dictionary, R=20, sort_topics=False)
-    pyLDAvis.save_html(vis_data, '../web_app/plots/pyLDAvis_40_topics.html')
 
     return lda_model, vis_data, fig
 
