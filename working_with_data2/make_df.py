@@ -1,7 +1,12 @@
 import subprocess
+import requests
 from pymongo import MongoClient
 import datetime
+from datetime import date
 from bs4 import BeautifulSoup
+from unidecode import unidecode
+from dateutil import parser
+from datetime import datetime, timedelta
 
 import numpy as np
 import pandas as pd
@@ -19,6 +24,7 @@ from nltk.tokenize import RegexpTokenizer
 
 import warnings
 warnings.filterwarnings('ignore')
+
 
 
 def get_df(db_name):
@@ -76,7 +82,25 @@ def get_df(db_name):
     return df
 
 
-def parse_str(x):
+def convert_date(df):
+    new_date = []
+    for i,date in enumerate(df['date_published']):
+        try:
+            temp = parser.parse(date)
+            if temp.microsecond != 0:
+                new_date.append(temp - timedelta(hours=6))
+            else:
+                new_date.append(temp)
+        except:
+            new_date.append(date)
+    df['date_published'] = new_date
+    df = df.reset_index(drop=True)
+
+    # fig = df['date_published'].groupby(new_df[~new_df['date_published'].isnull()]['date_published'].dt.day).count().plot(kind="bar")
+
+    return df
+
+def check_str(x):
     '''Checks if string or unidecode'''
     if isinstance(x, str):
         return unidecode(x)
@@ -88,7 +112,7 @@ def fix_cnn(df):
     Function to fix CNN articles because the library Newspaper didn't scrape these correctly,
     so I use BeautifulSoup to fix them
     """
-    for i in range(df.shape[0]):
+    for i in df.index:
         if df['source'][i] == 'cnn':
             url = df['url'][i]
             try:
@@ -98,7 +122,7 @@ def fix_cnn(df):
                 tag1 = soup.find('div', attrs={'class': 'el__leafmedia el__leafmedia--sourced-paragraph'}).text
                 tag2 = soup.find_all('div', attrs={'class': 'zn-body__paragraph speakable'})
                 tag3 = soup.find_all('div', attrs={'class': 'zn-body__paragraph'})
-                new_article_text = tag1+' /n '+parse_str(' \n '.join([line.text for line in tag2]))+parse_str(' \n '.join([line.text for line in tag3]))
+                new_article_text = tag1+' /n '+check_str(' \n '.join([line.text for line in tag2]))+check_str(' \n '.join([line.text for line in tag3]))
                 df['article_text'][i] = new_article_text
             except:
                 pass
@@ -110,7 +134,7 @@ def fix_huffpo(df):
     This was needed to fix Huffington Post articles before I got rid of tweets.
     Don't need and doesn't work now.
     """
-    for i in range(df.shape[0]):
+    for i in df.index:
         if df['source'][i] == 'huffpo':
             url = df['url'][i]
             try:
@@ -134,6 +158,9 @@ def clean_df(df):
     """
     # Remove duplicates by url
     df = df.drop_duplicates(subset='url')
+
+    # Remove date below the start of my scraping
+    df = df[df['date_published'] >= date(2017,5,18)]
     # Below I get rid of large articles that could throw off my algorithms
     # Remove two article types that were very long
     # any url with speech was just a transcript of speeches
@@ -147,6 +174,8 @@ def clean_df(df):
     # Can't have null values in text
     df = df[pd.notnull(df['article_text'])]
     df = df.dropna(how='all')
+    df = df.reset_index(drop=True)
+
     return df
 
 def build_texts(text):
@@ -271,19 +300,22 @@ def process_articles(df):
 
     return topic_texts, sentiment_texts, quote_texts, tweet_texts
 
-def watson_tone_analyzer(df, have_tones=True):
-    new_df = None
-    if have_tones:
-        new_df = df[df['tones'].isnull()]
-    else:
-        new_df = df
-    tones = df['tones']
-    for i in range(len(new_df.shape[0])):
-        json_response_sentiment = tone_analyzer.tone(text=' '.join(ast.literal_eval(new_df['sentiment_texts'][i])), sentences=False)
-        tones[i] = parse_toneanalyzer_response(json_response_sentiment)
+# def watson_tone_analyzer(df, have_tones=True):
+#     new_df = None
+#     if have_tones:
+#         new_df = df[df['tones'].isnull()]
+#     else:
+#         new_df = df
+#     tones = df['tones']
+#     for i in range(len(new_df.shape[0])):
+#         json_response_sentiment = tone_analyzer.tone(text=' '.join(ast.literal_eval(new_df['sentiment_texts'][i])), sentences=False)
+#         tones[i] = parse_toneanalyzer_response(json_response_sentiment)
+#
+#     df['tones'] = tones
+#     return tones
 
-    df['tones'] = tones
-    return tones
+
+
 
 if __name__ == '__main__':
     # df = get_df('rss_feeds_new')

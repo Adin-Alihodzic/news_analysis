@@ -6,9 +6,6 @@ import pickle
 import matplotlib.pyplot as plt
 import ast
 
-# from data_exploration import process_articles
-# from sentiment_analysis import topic_values
-
 from bokeh.models import ColumnDataSource, OpenURL, TapTool, WheelZoomTool, HoverTool, LassoSelectTool, PanTool, CustomJS, Slider
 from bokeh.plotting import figure, output_file, show
 from bokeh.models.widgets import Panel, Tabs, Dropdown, MultiSelect, CheckboxGroup
@@ -19,7 +16,7 @@ from bokeh.models.glyphs import Ellipse
 from wordcloud import WordCloud
 
 
-def make_bokeh_plot(topic_dict, topic):
+def make_bokeh_plot(topic_dict, topic, new_article=None):
     """
     Function to get Bokeh plots to be used in web app.
     Following are the steps we take:
@@ -28,25 +25,14 @@ def make_bokeh_plot(topic_dict, topic):
     2. Get script and div components to use in web app.
     3. Pickle components.
     """
-    # analytical_score = {topic: [] for topic in range(len(topic_dict))}
-    # for topic in range(len(topic_dict)):
-    analytical_score= []
-    for tone in topic_dict[topic]['tones']:
-        tone = ast.literal_eval(tone)
-        # analytical_score[topic].append(tone[1]['Analytical'])
-        analytical_score.append(tone[1]['Analytical'])
-
-    # components_dict = {topic: {'script': '', 'div': ''} for topic in range(num_topics+1)}
-    # for topic in range(num_topics+1):
-    # for topic in range(1):
-    output_file("../web_app/bokeh_plots/topic"+str(topic)+".html")
+    # output_file("web_app/bokeh_plots/topic"+str(topic)+".html")
 
     hover1 = HoverTool(
         tooltips=[
             ("Source", "@site"),
             ("Headline", "@headline"),
             ("Analytical Score", "@y{1.11}"),
-            ("Overall Score", "@x{1.11}"),
+            ("Sentiment Score", "@x{1.11}"),
             ("Positive Score", "@pos{1.11}"),
             ("Negative Score", "@neg{1.11}"),
             ("Objective Score", "@obj{1.11}"),
@@ -57,23 +43,26 @@ def make_bokeh_plot(topic_dict, topic):
         tooltips=[
             ("Source", "@site"),
             ("Analytical Score", "@y{1.11}"),
-            ("Overall Score", "@x{1.11}"),
+            ("Sentiment Score", "@x{1.11}"),
             ("Positive Score", "@pos{1.11}"),
             ("Negative Score", "@neg{1.11}"),
             ("Objective Score", "@obj{1.11}"),
         ]
     )
 
-    title="Analytical Score by Overall Score for Topic "+str(topic)
+    title="Analytical Score by Sentiment Score for Topic "+str(topic)
 
     p1 = figure(plot_width=1200, plot_height=800,
                 tools=["tap, pan, wheel_zoom",hover1], title=title,
-              toolbar_location="above")
+              toolbar_location="above", title_text_font_size='20pt')
+    p1.xaxis.axis_label_text_font_size = "20pt"
+    p1.yaxis.axis_label_text_font_size = "20pt"
 
     p2 = figure(plot_width=1200, plot_height=800,
                 tools=["tap, pan, wheel_zoom",hover2], title=title,
-              toolbar_location="above")
-
+              toolbar_location="above", title_text_font_size='20pt')
+    p2.xaxis.axis_label_text_font_size = "20pt"
+    p2.yaxis.axis_label_text_font_size = "20pt"
     # p.toolbar.active_drag = 'auto'
 
     a = 0.6
@@ -82,9 +71,11 @@ def make_bokeh_plot(topic_dict, topic):
     else:
         a = 0.6
     # colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (0,100,0), (0, 0, 0), (100, 25, 200), (255, 255, 0), (0, 255, 255), (255, 0, 255), (128, 128, 128), (0, 0, 128), (240,230,140)]
-    colors = ['#ff0000', '#00ff00', '#0000ff', '#006400', '#000000', '#6419c8', '#ffff00', '#00ffff', '	#ff00ff', '#808080', '#000080', '#f0e68c']
+    # colors = ['#ff0000', '#00ff00', '#0000ff', '#006400', '#000000', '#6419c8', '#ffff00', '#00ffff', '	#ff00ff', '#808080', '#000080', '#f0e68c']
     # colors = ['Red', 'Lime', 'Blue', 'DarkGreen', 'Black', 'No Name', 'Yellow', 'Aqua', 'Fuchsia', 'Grey', 'Navy', 'Khaki']
     # sources = ['cnn', 'abc', 'fox', 'nyt', 'reuters', 'wapo', 'huffpo', 'esquire', 'rollingstone', 'cbs', '538', 'washtimes']
+    colors = {'538': '#ff0000', 'abc': '#00ff00', 'cbs': '#0000ff', 'cnn': '#006400', 'esquire': '#000000', 'fox': '#6419c8', 'huffpo': '#ffff00', 'nyt': '#00ffff', 'reuters': '#ff00ff', 'rollingstone': '#808080', 'wapo': '#000080', 'washtimes': '#f0e68c'}
+
     sources = np.unique(topic_dict[topic]['source'])
 
     pos_by_site = {site: [] for site in sources}
@@ -98,8 +89,8 @@ def make_bokeh_plot(topic_dict, topic):
     site_by_site = {site: [] for site in sources}
     color_by_site = {site: [] for site in sources}
 
-    for site, color in zip(sources, colors):
-        indices = [j for j, s in enumerate(topic_dict[topic]['source']) if s == site and analytical_score[j] != 0 and topic_dict[topic]['length'][j] > 200]
+    for site in sources:
+        indices = [j for j, s in enumerate(topic_dict[topic]['source']) if s == site and topic_dict[topic]['Analytical'][j] != 0 and topic_dict[topic]['length'][j] > 200]
         if indices == []:
             pass
         else:
@@ -107,12 +98,12 @@ def make_bokeh_plot(topic_dict, topic):
             neg_by_site[site] = np.array(topic_dict[topic]['neg'])[indices]
             obj_by_site[site] = np.array(topic_dict[topic]['obj'])[indices]
             score_by_site[site] = (np.array(pos_by_site[site]) + np.array(pos_by_site[site])) * (1 - np.array(topic_dict[topic]['obj'])[indices])
-            analytical_by_site[site] = np.array(analytical_score)[indices]
+            analytical_by_site[site] = np.array(topic_dict[topic]['Analytical'])[indices]
             size_by_site[site] = [50*topic for topic in np.array(topic_dict[topic]['topic_prob'])[indices]]
             url_by_site[site] = np.array(topic_dict[topic]['url'])[indices]
             headline_by_site[site] = np.array(topic_dict[topic]['headline'])[indices]
             site_by_site[site] = [site for i in range(len(indices))]
-            color_by_site[site] = np.array([color for i in range(len(indices))])
+            color_by_site[site] = np.array([colors[site] for i in range(len(indices))])
 
 
     source = ColumnDataSource(data=dict(
@@ -155,11 +146,15 @@ def make_bokeh_plot(topic_dict, topic):
 
 
     p1.circle('x', 'y', color='color', alpha=a, size='size', source=source, legend='site')
+    if new_article != None:
+        article_legend=['Your Article']
+        p1.diamond(x=new_article[0], y=new_article[1], size=20,
+            color="#000000", line_width=2, legend=article_legend)
 
     # p1.xaxis.axis_label = "Positive Sentiment"
     # p1.yaxis.axis_label = "Negative Sentiment"
 
-    p1.xaxis.axis_label = "Overall Score"
+    p1.xaxis.axis_label = "Sentiment Score"
     p1.yaxis.axis_label = "Analytical Score"
 
     url = "@url"
@@ -379,7 +374,7 @@ def make_bokeh_plot(topic_dict, topic):
         neg=[np.mean(neg) for neg in neg_by_site.values()],
         obj=[np.mean(obj) for obj in obj_by_site.values()],
         size=[np.mean(size) for size in size_by_site.values()],
-        color=colors,
+        color=[c for c in colors.values()],
         site=sources
     ))
 
@@ -390,11 +385,15 @@ def make_bokeh_plot(topic_dict, topic):
         neg=[np.mean(neg) for neg in neg_by_site.values()],
         obj=[np.mean(obj) for obj in obj_by_site.values()],
         size=[np.mean(size)*(np.std(score)+np.std(analytical)) for size,score,analytical in zip(size_by_site.values(),score_by_site.values(),analytical_by_site.values())],
-        color=colors,
+        color=[c for c in colors.values()],
         site=sources
     ))
 
     p2.circle('x', 'y', color='color', alpha=1.0, size='size', source=source21, legend='site')
+    if new_article != None:
+        article_legend=['Your Article']
+        p2.diamond(x=new_article[0], y=new_article[1], size=20,
+            color="#000000", line_width=2, legend=article_legend)
 
     source23 = ColumnDataSource(data=dict(
         x=[np.mean(score) for score in score_by_site.values()],
@@ -405,14 +404,14 @@ def make_bokeh_plot(topic_dict, topic):
         size=[np.mean(size)*(np.std(score)+np.std(analytical)) for size,score,analytical in zip(size_by_site.values(),score_by_site.values(),analytical_by_site.values())],
         w=[np.std(score) for score in score_by_site.values()],
         h=[np.std(analytical) for analytical in analytical_by_site.values()],
-        color=colors,
+        color=[c for c in colors.values()],
         site=sources
     ))
     glyph = Ellipse(x="x", y="y", width="w", height="h", line_alpha=0.0, fill_alpha=0.2, fill_color="color")
     p2.add_glyph(source23, glyph)
 
 
-    p2.xaxis.axis_label = "Overall Score"
+    p2.xaxis.axis_label = "Sentiment Score"
     p2.yaxis.axis_label = "Analytical Score"
     p2.legend.location = "bottom_right"
 
@@ -421,6 +420,8 @@ def make_bokeh_plot(topic_dict, topic):
     tab2 = Panel(child=p2, title="By Site")
 
     tabs = Tabs(tabs=[ tab1, tab2 ])
+
+    # show(tabs)
 
     script, div = components(tabs)
 
@@ -435,7 +436,7 @@ def make_clouds(topic_texts, lda_model):
     3. Save all word clouds to use in web app.
     """
     # Topic 0 refers to all articles
-    figs = 0
+    figs = []
 
     fig = plt.figure(figsize=(16,12), dpi=300)
     plt.imshow(WordCloud(background_color="white", width=1200, height=800).generate(' '.join([' '.join(text) for text in topic_texts])), interpolation="bilinear")
@@ -443,7 +444,7 @@ def make_clouds(topic_texts, lda_model):
     plt.title("Topic #0")
     figs.append(fig)
 
-    for t in range(1, lda_model.num_topics+1):
+    for t in range(0, lda_model.num_topics):
         fig = plt.figure(figsize=(16,12), dpi=300)
         topic_word_probs = dict()
         lda_topics = lda_model.show_topics(num_topics=-1, num_words=100000,formatted=False)
@@ -451,7 +452,8 @@ def make_clouds(topic_texts, lda_model):
             topic_word_probs[word_prob[0]] = word_prob[1]
         plt.imshow(WordCloud(background_color="white", width=1200, height=800).fit_words(topic_word_probs), interpolation="bilinear")
         plt.axis("off")
-        plt.title("Topic #" + str(t))
+        plt.title("Topic #" + str(t+1))
+        plt.rcParams.update({'font.size': 22})
         figs.append(fig)
 
     return figs
@@ -463,14 +465,17 @@ if __name__ == '__main__':
     with open('../pickles/lda_model.pkl', 'rb') as f:
         lda_model = pickle.load(f)
 
+    with open('../pickles/topic_dict.pkl', 'rb') as f:
+        topic_dict = pickle.load(f)
+
     num_topics = lda_model.num_topics
 
-    print('Making topics dictionary...')
-    topic_dict = topic_values(df, lda_model)
+    # print('Making topics dictionary...')
+    # topic_dict = topic_values(df, lda_model)
 
     print('Making Plots...')
-    components_dict = [topic: {'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
-    for topic in range(self.lda_model.num_topics):
+    components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
+    for topic in range(lda_model.num_topics):
         components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
     pickle.dump(components_dict, open('../web_app/bokeh_plots/components_dict.pkl', 'wb'))
 

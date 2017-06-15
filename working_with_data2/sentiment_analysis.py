@@ -7,6 +7,22 @@ import matplotlib.pyplot as plt
 import nltk
 from nltk.corpus import sentiwordnet as swn
 
+
+# BEGIN of python-dotenv section
+from os.path import join, dirname
+from dotenv import load_dotenv
+import os
+
+from watson_developer_cloud import ToneAnalyzerV3
+
+dotenv_path = join(dirname('__file__'), '.env')
+load_dotenv(dotenv_path)
+
+tone_analyzer = ToneAnalyzerV3(
+   username=os.environ.get("TONE_USERNAME"),
+   password=os.environ.get("TONE_PASSWORD"),
+   version='2016-05-19')
+
 # from data_exploration import process_articles, article_topics_and_topic_coverage
 
 def get_sentiment(word):
@@ -157,7 +173,7 @@ def topic_values(df, topic_texts, sentiment_texts, lda_model):
     all_article_topics, fig = article_topics_and_topic_coverage(lda_model, topic_texts, tokenized=False)
 
     print('Creating Dictionary...')
-    topic_dict = {topic: {'pos': [], 'neg': [], 'obj': [], 'topic_prob': [], 'url': [], 'source': [], 'headline': [], 'tones': [], 'length': []} for topic in range(num_topics+1)}
+    topic_dict = {topic: {'pos': [], 'neg': [], 'obj': [], 'topic_prob': [], 'url': [], 'source': [], 'headline': [], 'Anger': [], 'Fear': [], 'Disgust': [], 'Joy': [], 'Sadness': [], 'Analytical': [], 'length': [], 'date_published': []} for topic in range(num_topics+1)}
 
     # def fill_topic_dict(i):
     for i in range(len(sentiment_texts)):
@@ -170,7 +186,13 @@ def topic_values(df, topic_texts, sentiment_texts, lda_model):
         topic_dict[0]['url'].append(df['url'][i])
         topic_dict[0]['source'].append(df['source'][i])
         topic_dict[0]['headline'].append(df['headline'][i])
-        topic_dict[0]['tones'].append(df['tones'][i])
+        topic_dict[0]['Anger'].append(df['Anger'][i])
+        topic_dict[0]['Fear'].append(df['Fear'][i])
+        topic_dict[0]['Disgust'].append(df['Disgust'][i])
+        topic_dict[0]['Joy'].append(df['Joy'][i])
+        topic_dict[0]['Sadness'].append(df['Sadness'][i])
+        topic_dict[0]['Analytical'].append(df['Analytical'][i])
+        topic_dict[0]['date_published'].append(df['date_published'][i])
         topic_dict[0]['length'].append(len(sentiment_texts[i]))
 
         for topic_and_prob in all_article_topics[i]:
@@ -184,13 +206,140 @@ def topic_values(df, topic_texts, sentiment_texts, lda_model):
             topic_dict[topic]['url'].append(df['url'][i])
             topic_dict[topic]['source'].append(df['source'][i])
             topic_dict[topic]['headline'].append(df['headline'][i])
-            topic_dict[topic]['tones'].append(df['tones'][i])
+            topic_dict[topic]['Anger'].append(df['Anger'][i])
+            topic_dict[topic]['Fear'].append(df['Fear'][i])
+            topic_dict[topic]['Disgust'].append(df['Disgust'][i])
+            topic_dict[topic]['Joy'].append(df['Joy'][i])
+            topic_dict[topic]['Sadness'].append(df['Sadness'][i])
+            topic_dict[topic]['Analytical'].append(df['Analytical'][i])
+            topic_dict[topic]['date_published'].append(df['date_published'][i])
             topic_dict[topic]['length'].append(len(sentiment_texts[i]))
 
     # pool = mp.Pool(50)
     # pool.map(fill_topic_dict, list(range(len(sentiment_texts))))
 
     return topic_dict, all_article_topics, sentiment_of_words, fig
+
+
+def parse_toneanalyzer_response(json_data):
+    """Parses the JSON response from ToneAnalyzer to return
+    a dictionary of emotions and their corresponding score.
+
+    Parameters
+    ----------
+    json_data: {dict} a json response from ToneAnalyzer (see Notes)
+
+    Returns
+    -------
+    dict : a {dict} whose keys are emotion ids and values are their corresponding score.
+    """
+    emotion_tones = {}
+    for entry in json_data['document_tone']['tone_categories']:
+        if entry['category_id'] == 'emotion_tone':
+            for emotion in entry['tones']:
+                emotion_key = emotion['tone_name']
+                emotion_value = emotion['score']
+                emotion_tones[emotion_key] = emotion_value
+
+    language_tones = {}
+    for entry in json_data['document_tone']['tone_categories']:
+        if entry['category_id'] == 'language_tone':
+            for language in entry['tones']:
+                language_key = language['tone_name']
+                language_value = language['score']
+                language_tones[language_key] = language_value
+
+    social_tones = {}
+    for entry in json_data['document_tone']['tone_categories']:
+        if entry['category_id'] == 'social_tone':
+            for social in entry['tones']:
+                social_key = social['tone_name']
+                social_value = social['score']
+                social_tones[social_key] = social_value
+
+    return emotion_tones, language_tones, social_tones
+
+def get_new_tones(df, prev_df):
+    '''Used when you've already got some tones for df'''
+    anger = []
+    disgust = []
+    fear = []
+    joy = []
+    sadness = []
+    analytical = []
+    confident = []
+    tentative = []
+    openness = []
+    conscientiousness = []
+    extraversion = []
+    agreeableness = []
+    emotional_range = []
+    for url, sentiment_texts in zip(df['url'], df['sentiment_texts']):
+        tone_idx = [i for i in prev_df[prev_df['url'] == url].index]
+        if tone_idx != []:
+            tone_idx = tone_idx[0]
+            anger.append(prev_df['Anger'][tone_idx])
+            disgust.append(prev_df['Disgust'][tone_idx])
+            fear.append(prev_df['Fear'][tone_idx])
+            joy.append(prev_df['Joy'][tone_idx])
+            sadness.append(prev_df['Sadness'][tone_idx])
+            analytical.append(prev_df['Analytical'][tone_idx])
+            confident.append(prev_df['Confident'][tone_idx])
+            tentative.append(prev_df['Tentative'][tone_idx])
+            openness.append(prev_df['Openness'][tone_idx])
+            conscientiousness.append(prev_df['Conscientiousness'][tone_idx])
+            extraversion.append(prev_df['Extraversion'][tone_idx])
+            agreeableness.append(prev_df['Agreeableness'][tone_idx])
+            emotional_range.append(prev_df['Emotional Range'][tone_idx])
+        else:
+            try:
+                json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts), sentences=False)
+                temp = parse_toneanalyzer_response(json_response_sentiment)
+                anger.append(temp[0]['Anger'])
+                disgust.append(temp[0]['Disgust'])
+                fear.append(temp[0]['Fear'])
+                joy.append(temp[0]['Joy'])
+                sadness.append(temp[0]['Sadness'])
+                analytical.append(temp[1]['Analytical'])
+                confident.append(temp[1]['Confident'])
+                tentative.append(temp[1]['Tentative'])
+                openness.append(temp[2]['Openness'])
+                conscientiousness.append(temp[2]['Conscientiousness'])
+                extraversion.append(temp[2]['Extraversion'])
+                agreeableness.append(temp[2]['Agreeableness'])
+                emotional_range.append(temp[2]['Emotional Range'])
+            except:
+                print('API not working')
+                anger.append(np.nan)
+                disgust.append(np.nan)
+                fear.append(np.nan)
+                joy.append(np.nan)
+                sadness.append(np.nan)
+                analytical.append(np.nan)
+                confident.append(np.nan)
+                tentative.append(np.nan)
+                openness.append(np.nan)
+                conscientiousness.append(np.nan)
+                extraversion.append(np.nan)
+                agreeableness.append(np.nan)
+                emotional_range.append(np.nan)
+
+
+    df['Anger'] = anger
+    df['Fear'] = fear
+    df['Disgust'] = disgust
+    df['Joy'] = joy
+    df['Sadness'] = sadness
+    df['Analytical'] = analytical
+    df['Confident'] = confident
+    df['Tentative'] = tentative
+    df['Openness'] = openness
+    df['Conscientiousness'] = conscientiousness
+    df['Extraversion'] = extraversion
+    df['Agreeableness'] = agreeableness
+    df['Emotional Range'] = emotional_range
+
+    return df
 
 
 

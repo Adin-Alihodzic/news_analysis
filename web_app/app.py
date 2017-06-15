@@ -13,6 +13,26 @@ from gensim.summarization import summarize
 import datetime
 import ast
 import numpy as np
+import subprocess
+
+import json
+import pandas as pd
+import ast
+
+# BEGIN of python-dotenv section
+from os.path import join, dirname
+from dotenv import load_dotenv
+import os
+
+from watson_developer_cloud import ToneAnalyzerV3
+
+dotenv_path = join(dirname('__file__'), '.env')
+load_dotenv(dotenv_path)
+
+tone_analyzer = ToneAnalyzerV3(
+   username=os.environ.get("TONE_USERNAME"),
+   password=os.environ.get("TONE_PASSWORD"),
+   version='2016-05-19')
 
 from flask import Flask, render_template, request
 import webbrowser, threading, os
@@ -23,11 +43,11 @@ from bokeh.util.string import encode_utf8
 import nltk
 from nltk.corpus import sentiwordnet as swn
 
-sys.path.append('/home/ian/Galvanize/news_bias/working_with_data2')
+sys.path.append('/home/ian/Galvanize/news_analysis/working_with_data2')
 from make_df import process_articles
-from sentiment_analysis import article_sentiment
+from sentiment_analysis import article_sentiment, parse_toneanalyzer_response
 from bokeh_plotting import make_bokeh_plot
-sys.path.append('/home/ian/Galvanize/news_bias/web_app')
+sys.path.append('/home/ian/Galvanize/news_analysis/web_app')
 
 app = Flask(__name__)
 
@@ -160,7 +180,7 @@ def predict():
         url = str(request.form['url'])
         result = get_article(url)
         if result[0] != False:
-            article_text, headline, author, date_published = result[1]
+            (article_text, headline, author, date_published) = result[1]
             summary = get_summary(article_text)
 
             data = {'article_text': article_text, 'headline': headline}
@@ -189,6 +209,13 @@ def predict():
             with open('../pickles/topic_dict.pkl', 'rb') as f:
                 topic_dict = pickle.load(f)
 
+            print(sentiment_texts[0])
+            json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts[0]), sentences=False)
+            tones = parse_toneanalyzer_response(json_response_sentiment)
+            analytical_score = tones[1]['Analytical']
+
+            script, div = make_bokeh_plot(topic_dict, topic, new_article=[analytical_score, score])
+
             pos_all = []
             neg_all = []
             obj_all = []
@@ -216,7 +243,9 @@ def predict():
                                     obj_mean="{0:.3f}".format(obj_mean),
                                     score_mean="{0:.3f}".format(score_mean),
                                     topic=max_topic,
-                                    topic_prob=max_prob)
+                                    topic_prob=max_prob,
+                                    script=script,
+                                    div=div)
         else:
 
             return render_template('prediction_failed.html')
@@ -224,8 +253,10 @@ def predict():
 # graphs page
 @app.route('/graphs')
 def graphs():
-    f = codecs.open("plots/pyLDAvis_40_topics.html", 'r')
-    pyLDAvis_html = f.read()
+    with open('../pickles/lda_model.pkl', 'rb') as f:
+        lda_model = pickle.load(f)
+    vis_plot = codecs.open("plots/pyLDAvis_"+str(lda_model.num_topics)+"_topics.html", 'r')
+    pyLDAvis_html = vis_plot.read()
 
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
@@ -248,24 +279,16 @@ def graphs_input():
         with open('../pickles/topic_dict.pkl', 'rb') as f:
             topic_dict = pickle.load(f)
 
+        
+
         script, div = make_bokeh_plot(topic_dict, topic)
 
-        anger_tones = []
-        disgust_tones = []
-        fear_tones = []
-        joy_tones = []
-        sadness_tones = []
-        analytical_score = []
-
-        tones = {'Anger': []}
-
-        for tone in topic_dict[topic]['tones']:
-            tone = ast.literal_eval(tone)
-            anger_tones.append(tone[0]['Anger'])
-            disgust_tones.append(tone[0]['Disgust'])
-            fear_tones.append(tone[0]['Fear'])
-            joy_tones.append(tone[0]['Joy'])
-            sadness_tones.append(tone[0]['Sadness'])
+        anger_tones = topic_dict[topic]['Anger']
+        disgust_tones = topic_dict[topic]['Disgust']
+        fear_tones = topic_dict[topic]['Fear']
+        joy_tones = topic_dict[topic]['Joy']
+        sadness_tones = topic_dict[topic]['Sadness']
+        analytical_score = topic_dict[topic]['Analytical']
 
         tone_mean = []
         for i in range(5):
@@ -312,4 +335,4 @@ def contact():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8105, debug=True)
+    app.run(host='0.0.0.0', port=8106, debug=True)

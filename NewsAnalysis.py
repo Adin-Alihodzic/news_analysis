@@ -3,10 +3,10 @@ import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
 
-from working_with_data2.make_df import get_df, fix_cnn, clean_df, process_articles
-from working_with_data2.data_exploration import all_length_hist, article_length_hist, dictionary_and_corpus, run_lda
-from working_with_data2.sentiment_analysis import topic_values
-from working_with_data2.bokeh_plotting import make_plots, make_clouds
+from working_with_data2.make_df import get_df, fix_cnn, clean_df, process_articles, convert_date
+from working_with_data2.data_exploration import all_length_hist, article_length_hist, dictionary_and_corpus, run_lda, mood_plots, pos_neg_plot, coverage_by_site_by_topic
+from working_with_data2.sentiment_analysis import topic_values, get_new_tones
+from working_with_data2.bokeh_plotting import make_bokeh_plot, make_clouds
 
 import pyLDAvis.gensim
 
@@ -31,6 +31,7 @@ class NewsAnalysis:
     def from_mongo(self, db_name):
         """
         Function calls from make_df.py to get create Pandas DataFrame from JSON files in Mongo database.
+        You want to run import_database.py before this to get the database.
         Following are the steps we take:
 
         1. Get collections from Mongo
@@ -57,10 +58,15 @@ class NewsAnalysis:
         print('Cleaning df...')
         df = clean_df(df)
 
+        df = df[pd.notnull(df['article_text'])]
+        df = df.reset_index(drop=True)
+
         return df
 
     def from_csv(self,filename):
         df = pd.read_csv(filename)
+        df = df[pd.notnull(df['article_text'])]
+        df = df.reset_index(drop=True)
 
         self.topic_texts = [text.split(' ') for text in df['topic_texts']]
         self.sentiment_texts = [text.split(' ') for text in df['sentiment_texts']]
@@ -70,6 +76,7 @@ class NewsAnalysis:
         return df
 
     def to_csv(self, df, filename):
+        df = df[pd.notnull(df['article_text'])]
         df.to_csv(filename, index=False)
 
     def process_texts(self, df):
@@ -97,35 +104,63 @@ class NewsAnalysis:
 
         return df
 
+    def get_tones(self, df, prev_df=None):
+        """
+        Function call from make_df.py to get tone from IBM Watson's ToneAnalyzerV3.
+        Following are the steps we take:
+
+        1. If no previous df given with tones then make empty df to pass in so we get tones for all rows in df.
+        2. If given previous array then just get tones for new values so we don't overuse API.
+        3. Get new tones from function and return.
+
+        Parameters:
+        ----------
+        df: dataframe (clean)
+        prev_df: (optional) If already gotten tones then give previous so we don't overuse API.
+
+        Returns:
+        -------
+        df (with tones): Return same df with extra column for tones
+        """
+        # if prev_df == None:
+        #     prev_df = df.drop(df.index)
+        df = get_new_tones(df, prev_df)
+
+        return df
+
     def make_plots(self, df):
         '''Makes all plots used in web app'''
         # Length Histograms
-        topic_length_hist, quote_length_hist = all_length_hist(df, self.topic_texts, self.sentiment_texts, self.quote_texts, self.tweet_texts)
-        topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist.png')
-        quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist.png')
+        # topic_length_hist, quote_length_hist = all_length_hist(df, self.topic_texts, self.sentiment_texts, self.quote_texts, self.tweet_texts)
+        # topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist.png')
+        # quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist.png')
+        #
+        # # Mood Bar Graphs
+        # mood_figs = mood_plots(self.topic_dict)
+        # for i,mood_fig in enumerate(mood_figs):
+        #     mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'.png')
+        #
+        # # Positive/Negative Bar Charts
+        # pos_neg_figs = pos_neg_plot(self.topic_dict)
+        # for i,pos_neg_fig in enumerate(pos_neg_figs):
+        #     pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'.png')
 
-        # Mood Bar Graphs
-        mood_figs = mood_plots(self.topic_dict)
-        for i,mood_fig in enumerate(mood_figs):
-            mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'.png')
-
-        # Positive/Negative Bar Charts
-        pos_neg_figs = pos_neg_plot(self.topic_dict)
-        for i,pos_neg_fig in enumerate(pos_neg_figs):
-            pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'.png')
-
-        # Bokeh plots
-        components_dict = [topic: {'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
-        for topic in range(self.lda_model.num_topics):
-            components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
-        pickle.dump(components_dict, open('web_app/bokeh_plots/components_dict.pkl', 'wb'))
+        coverage_figs = coverage_by_site_by_topic(self.topic_dict)
+        for i,coverage_fig in enumerate(coverage_figs):
+            coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'.png')
+        #
+        # # Bokeh plots
+        # components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
+        # for topic in range(self.lda_model.num_topics):
+        #     components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
+        # pickle.dump(components_dict, open('web_app/bokeh_plots/components_dict.pkl', 'wb'))
 
         # Word Clouds
-        cloud_figs = make_clouds(self.topic_texts, self.lda_model)
-        for i,cloud_fig in enumerate(cloud_figs):
-            cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(t)+'.png')
+        # cloud_figs = make_clouds(self.topic_texts, self.lda_model)
+        # for i,cloud_fig in enumerate(cloud_figs):
+        #     cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'.png')
 
-    def run_lda_model(self, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.7, K=15, T=150, passes=20, iterations=400):
+    def run_lda_model(self, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=20, iterations=400):
         """
         Function to get LDA model. Following are the steps we take:
 
@@ -137,7 +172,7 @@ class NewsAnalysis:
 
         Parameters:
         ----------
-        topn, num_topics: # of Words to consider and # of topics.
+        topn, num_topics: # of Words to consider and # of topics (if None given then it will determine how many topics using HDP-LDA)
         weight_threshold: If num_topics not given - Give threshold to determine topics from HDP-LDA.
         K=15, T=150: HDP hyperparameters
 
@@ -151,26 +186,24 @@ class NewsAnalysis:
                             num_topics=num_topics, weight_threshold=weight_threshold, K=K, T=T, passes=20, iterations=400)
 
 
-        pickle.dump(lda_model, open('pickles/lda_model.pkl', 'wb'))
+        pickle.dump(self.lda_model, open('pickles/lda_model.pkl', 'wb'))
 
-        pyLDAvis.save_html(vis_data, 'web_app/plots/pyLDAvis_'+lda_model.num_topics+'_topics.html')
+        pyLDAvis.save_html(vis_data, 'web_app/plots/pyLDAvis_'+str(self.lda_model.num_topics)+'_topics.html')
 
         fig.savefig('web_app/static/img/hdp_topic_probabilities.png', dpi=fig.dpi)
 
-        self.lda_topics = lda_model.show_topics(num_topics=-1, num_words=100000,formatted=False)
+        self.lda_topics = self.lda_model.show_topics(num_topics=-1, num_words=100000,formatted=False)
 
         return self.lda_model
 
-    def get_lda_model(self):
+    def get_lda_model(self, lda_model):
         '''
         Returns precomputed LDA model from pickle
         '''
-        with open('pickles/lda_model.pkl', 'rb') as f:
-            self.lda_model = pickle.load(f)
+        self.lda_model = lda_model
 
         self.lda_topics = lda_model.show_topics(num_topics=-1, num_words=100000,formatted=False)
 
-        return self.lda_model
 
     def get_topic_values(self, df):
         """
@@ -185,45 +218,57 @@ class NewsAnalysis:
         -------
         topic_dict
         """
-        self.topic_dict, self.all_article_topics, self.sentiment_of_words = \
+        self.topic_dict, self.all_article_topics, self.sentiment_of_words, fig = \
                         topic_values(df, self.topic_texts, self.sentiment_texts, self.lda_model)
 
         pickle.dump(self.topic_dict, open('pickles/topic_dict.pkl', 'wb'))
 
+        fig.savefig('web_app/static/img/coverage_by_topics.png', dpi=fig.dpi)
+
         return self.topic_dict
 
-    def make_plots_and_clouds(self):
-        '''
-        Uses file bokeh_plotting.py to create Bokeh plots and word clouds
-        '''
-        self.components_dict = make_plots(self.topic_dict, self.lda_model.num_topics)
-        make_clouds(self.topic_texts, self.lda_model)
+    def get_topic_dict(self, topic_dict):
+        self.topic_dict = topic_dict
 
 
 if __name__ == '__main__':
     na = NewsAnalysis()
-    #
+
     # df = na.from_mongo('rss_feeds_new')
     # df = df[pd.notnull(df['article_text'])]
+    # df = df.reset_index(drop=True)
     #
     # df = na.process_texts(df)
-    #
+
+    # df = na.from_csv('data/rss_feeds_last.csv')
+    df = na.from_csv('data/rss_with_tones_in_df_fixed_time.csv')
+
+    # df = convert_date(df)
+    # df = df.reset_index(drop=True)
+
+    # df_tones = pd.read_csv('data/rss_feeds_with_tones3.csv')
+    # df = na.get_tones(df, df_tones)
     # na.to_csv(df, 'data/rss_feeds_new_from_NA.csv')
 
-    df = na.from_csv('data/rss_feeds_with_tones.csv')
+    # df = na.from_csv('data/rss_feeds_with_tones.csv')
 
-    # df = pd.read_csv('data/rss_feeds_new_good_with_extra.csv')
+    # df = na.from_csv('data/rss_feeds_with_tones2.csv')
+    # df = df[pd.notnull(df['tones'])]
+    # df = df.reset_index(drop=True)
 
+    # print('Making LDA model. This will take awhile...')
+    # lda_model = na.run_lda_model(no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=40, iterations=2000)
 
-    # na.make_hists(df)
+    with open('pickles/lda_model.pkl', 'rb') as f:
+        lda_model = pickle.load(f)
 
-    print('Making LDA model. This will take awhile...')
-    lda_model = na.run_lda_model(no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=1, iterations=10)
-    pickle.dump(lda_model, open('pickles/lda_model.pkl', 'wb'))
+    na.get_lda_model(lda_model)
 
-    print('Making topic dictionary model. This will also take awhile...')
-    topic_dict = get_topic_values(df)
-    pickle.dump(topic_dict, open('pickles/topic_dict.pkl', 'wb'))
+    # print('Making topic dictionary model. This will also take awhile...')
+    # topic_dict = na.get_topic_values(df)
+    with open('pickles/topic_dict.pkl', 'rb') as f:
+        topic_dict = pickle.load(f)
+    na.get_topic_dict(topic_dict)
 
-    print('Making Bokeh Plots and Word Clouds')
-    make_plots()
+    print('Making Plots. This takes a really long time...')
+    na.make_plots(df)

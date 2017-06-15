@@ -36,24 +36,26 @@
 
   </head>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
   <body>
+
+  <!-- Sidebar -->
+  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:8%">
+    <h3 class="w3-bar-item">Jump To:</h3>
+    <a href="#plot" class="w3-bar-item w3-button">Plot</a>
+    <a href="#mood" class="w3-bar-item w3-button">Mood</a>
+    <a href="#pos_neg" class="w3-bar-item w3-button">Sentiment</a>
+    <a href="#word_cloud" class="w3-bar-item w3-button">Word Cloud</a>
+  </div>
 
   <div class="container-fluid text-left">
     <div class="row content">
       <div class="col-sm-2 sidenav">
-        <form action = "/graphs" >
-            <ul >
-                <input type ="submit" value="Go to Topic Selector" />
-            </ul>
-        </form>
-        <form action = "/graphs_input" method="POST" >
-            <ul >
-                Input a Different Topic: <input name="topic" type ="number" style="width: 60px" />
-                <input type ="submit" value="submit" /> </li>
-            </ul>
-        </form>
+
       </div>
+
       <div class="col-sm-8 text-left">
         <h1 align="center">Topic {{ topic_num }}</h1>
         <p>
@@ -62,6 +64,10 @@
           Below are several plots and images, such as an interactive plot and a word cloud, to help you with that as well as show you how news sites and articles discuss this topic.
         </p>
 
+        <a name="plot"></a>
+        <hr>
+        <hr>
+        <hr>
         <h2 align="center">Interactive Plot</h2>
         <p>
           The following plot was created in Bokeh.
@@ -89,8 +95,12 @@
             {{ div | safe }}
             {{ script | safe }}
         </div>
-        <hr>
 
+
+        <a name="mood"></a>
+        <hr>
+        <hr>
+        <hr>
         <h2>Mood: This Topic's Mood is <font size="10" {{ color }}>{{ tone }}</font></h2>
         <p>
           The average mood per article for this topic was {{ tone }}, with a probability of {{ tone_mean }}.
@@ -102,8 +112,12 @@
           The plot below is a stacked bar chart of all mood scores per article for this topic. The scores were sorted for a better representation.
         </p>
         <img {{ mood_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
-        <hr>
 
+
+        <a name="pos_neg"></a>
+        <hr>
+        <hr>
+        <hr>
         <h2>Positive/Negative Scores</h2>
         <p>
           Below is a bar chart of the positive score (blue) for each article going up and the negative score (red) going down.
@@ -111,8 +125,11 @@
           The sentiment words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
         </p>
         <img {{ pos_neg_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
-        <hr>
 
+        <a name="word_cloud"></a>
+        <hr>
+        <hr>
+        <hr>
         <h2>Word Cloud</h2>
         <p>
           Below is a Word Cloud of the topic words for this topic.
@@ -123,7 +140,17 @@
       </div>
       <div class="col-sm-2 sidenav">
         <div class="well">
-          <p>ADS</p>
+          <form action = "/graphs" >
+              <ul >
+                  <input type ="submit" value="Go to Topic Selector" />
+              </ul>
+          </form>
+          <form action = "/graphs_input" method="POST" >
+              <ul >
+                  Input a Different Topic: <input name="topic" type ="number" style="width: 60px" />
+                  <input type ="submit" value="submit" /> </li>
+              </ul>
+          </form>
         </div>
         <div class="well">
           <p>ADS</p>

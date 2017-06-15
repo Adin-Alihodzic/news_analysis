@@ -4,6 +4,8 @@ import pandas as pd
 import pickle
 import re
 import ast
+from datetime import datetime, date
+import matplotlib.dates as mdates
 
 from gensim.summarization import summarize
 from gensim.summarization import keywords
@@ -79,7 +81,7 @@ def article_length_hist(df):
     for i, source in enumerate(site_article_length.keys()):
         plt.subplot(4,3,i+1)
         plt.hist(site_article_length[source], normed=True, bins=100)
-        plt.title('Article Length '+source)
+        plt.title('Article Length for'+source)
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig
@@ -96,7 +98,7 @@ def quote_length_hist(df):
     for i, source in enumerate(site_article_length.keys()):
         plt.subplot(4,3,i+1)
         plt.hist(site_article_length[source], normed=True, bins=100)
-        plt.title('Article Length '+source)
+        plt.title('Article Length for'+source)
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig
@@ -182,6 +184,97 @@ def coverage_by_site_hist(model, df):
 
     return figs
 
+
+# def coverage_by_site_by_topic(df_all, topic_dict):
+#     df_count = df_all.groupby('source')['date_published'].count()
+#     figs = []
+#     for topic in range(len(topic_dict)):
+#         dates = topic_dict[topic]['date_published']
+#         sources = topic_dict[topic]['source']
+#         df = pd.DataFrame({'date_published' : pd.Series(dates), 'source': pd.Series(sources)})
+#         df = df[df['date_published'] > date(2017,5,18)]
+#         idx_dates = pd.date_range(df['date_published'].dt.date.min().isoformat(), df['date_published'].dt.date.max().isoformat())
+#
+#         fig = plt.figure(figsize=(16,12), dpi=300)
+#         ax1 = fig.add_subplot(111)
+#         for i,source in enumerate(np.unique(sources)):
+#             new_df = df[df['source'] == source]
+#
+#             new_df = new_df['date_published'].dt.date.value_counts()
+#             new_df.sort_index(inplace=True)
+#             new_df = new_df.reindex(idx_dates, fill_value=0)
+#             new_df = new_df/df_count['cnn']
+#             x = new_df.index
+#             y = new_df.values
+#             ax1.plot(x, y, label=source)
+#         fig.autofmt_xdate()
+#         plt.rcParams.update({'font.size': 22})
+#         plt.legend(loc='upper left', prop={'size':10})
+#
+#         figs.append(fig)
+#     return figs
+
+
+def coverage_by_site_by_topic(df_all, topic_dict):
+    colors = {'538': '#ff0000', 'abc': '#00ff00', 'cbs': '#0000ff', 'cnn': '#006400', 'esquire': '#000000', 'fox': '#6419c8', 'huffpo': '#ffff00', 'nyt': '#00ffff', 'reuters': '#ff00ff', 'rollingstone': '#808080', 'wapo': '#000080', 'washtimes': '#f0e68c'}
+    df_count = df_all.groupby('source')['date_published'].count()
+    figs = []
+    for topic in range(len(topic_dict)):
+    # for topic in range(1):
+        dates = topic_dict[topic]['date_published']
+        sources = topic_dict[topic]['source']
+        df = pd.DataFrame({'date_published' : pd.Series(dates), 'source': pd.Series(sources)})
+        df = df[df['date_published'] > date(2017,5,18)]
+        y_max = (df['date_published'].dt.date.value_counts()/df_count.values.max()).max()
+        idx_dates = pd.date_range(df['date_published'].dt.date.min().isoformat(), df['date_published'].dt.date.max().isoformat())
+
+        fig = plt.figure(figsize=(16,12), dpi=300)
+        ax_all = fig.add_subplot(111)
+        # ax_all.set_xlabel('date')
+        ax_all.set_ylabel('% of all articles')
+        ax_all.set_title('Coverage of Topic by Site')
+        for k,v in ax_all.spines.items():
+            v.set_visible(False)
+        ax_all.set_xticks([])
+        ax_all.set_yticks([])
+        axes = []
+        y_lim = []
+        for i,source in enumerate(np.unique(df['source'])):
+            ax = fig.add_subplot(12,1,i+1)
+            new_df = df[df['source'] == source]
+
+            new_df = new_df['date_published'].dt.date.value_counts()
+            new_df.sort_index(inplace=True)
+            new_df = new_df.reindex(idx_dates, fill_value=0)
+            new_df = new_df/df_count['cnn']
+            x = new_df.index
+            y = new_df.values
+            ax.plot(x, y, label=source, color=colors[source])
+            ax.legend(loc='upper left', prop={'size':10})
+            for k,v in ax.spines.items():
+                v.set_visible(False)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            axes.append(ax)
+            y_lim.append(new_df.values.max())
+        for ax in axes:
+            ax.set_ylim(0,max(y_lim))
+        # plt.xlabel('date')
+        # plt.ylabel('% of overall articles')
+        # ax_all.set_xlabel('date')
+        # ax_all.set_ylabel('% of all articles')
+        # ax_all.set_title('Coverage of Topic by Site')
+        axes[-1].set_xticks(idx_dates)
+        xfmt = mdates.DateFormatter('%m-%d')
+        axes[-1].xaxis.set_major_formatter(xfmt)
+        fig.autofmt_xdate()
+        plt.rcParams.update({'font.size': 10})
+
+        figs.append(fig)
+    return figs
+
+
+
 def mood_plots(topic_dict):
 
     anger_tones = {topic: [] for topic in range(len(topic_dict))}
@@ -193,24 +286,16 @@ def mood_plots(topic_dict):
 
     a = 1.0
     colors = [(1, 0, 0, a), (0, 1, 0, a), (128.0/255, 0, 128.0/255, a), (1, 1, 0, a), (0, 0 , 1, a), (0.5,0.5,0.5,a)]
+    # colors = ['red', 'green', 'blue', 'yellow', 'blue']
 
     figs = []
     for topic in range(len(topic_dict)):
-        for tone in topic_dict[topic]['tones']:
-            tone = ast.literal_eval(tone)
-            anger_tones[topic].append(tone[0]['Anger'])
-            disgust_tones[topic].append(tone[0]['Disgust'])
-            fear_tones[topic].append(tone[0]['Fear'])
-            joy_tones[topic].append(tone[0]['Joy'])
-            sadness_tones[topic].append(tone[0]['Sadness'])
-            analytical_score[topic].append(tone[1]['Analytical'])
-
-        idx = np.argsort([a+b+c+d+e for a,b,c,d,e in zip(anger_tones[topic],disgust_tones[topic],fear_tones[topic],joy_tones[topic],sadness_tones[topic])])
-        sorted_anger_tones = np.array(anger_tones[topic])[idx]
-        sorted_disgust_tones = np.array(disgust_tones[topic])[idx]
-        sorted_fear_tones = np.array(fear_tones[topic])[idx]
-        sorted_joy_tones = np.array(joy_tones[topic])[idx]
-        sorted_sadness_tones = np.array(sadness_tones[topic])[idx]
+        idx = np.argsort([a+b+c+d+e for a,b,c,d,e in zip(topic_dict[topic]['Anger'],topic_dict[topic]['Disgust'],topic_dict[topic]['Fear'],topic_dict[topic]['Joy'],topic_dict[topic]['Sadness'])])
+        sorted_anger_tones = np.array(topic_dict[topic]['Anger'])[idx]
+        sorted_disgust_tones = np.array(topic_dict[topic]['Disgust'])[idx]
+        sorted_fear_tones = np.array(topic_dict[topic]['Fear'])[idx]
+        sorted_joy_tones = np.array(topic_dict[topic]['Joy'])[idx]
+        sorted_sadness_tones = np.array(topic_dict[topic]['Sadness'])[idx]
 
         N = len(idx)
         ind = np.arange(N)    # the x locations for the groups
@@ -218,16 +303,18 @@ def mood_plots(topic_dict):
 
         fig = plt.figure(figsize=(16,12), dpi=300)
 
-        p1 = plt.bar(ind, sorted_sadness_tones, width, color=colors[4])
-        p2 = plt.bar(ind, sorted_disgust_tones, width, color=colors[1], bottom=sorted_sadness_tones)
-        p3 = plt.bar(ind, sorted_anger_tones, width, color=colors[0], bottom=sorted_sadness_tones+sorted_disgust_tones)
-        p4 = plt.bar(ind, sorted_fear_tones, width, color=colors[2], bottom=sorted_sadness_tones+sorted_disgust_tones+sorted_anger_tones)
-        p5 = plt.bar(ind, sorted_joy_tones, width, color=colors[3], bottom=sorted_sadness_tones+sorted_disgust_tones+sorted_anger_tones+sorted_fear_tones)
+        p1 = plt.bar(ind, sorted_sadness_tones, width, color='blue')
+        p2 = plt.bar(ind, sorted_disgust_tones, width, color='green', bottom=sorted_sadness_tones)
+        p3 = plt.bar(ind, sorted_anger_tones, width, color='red', bottom=sorted_sadness_tones+sorted_disgust_tones)
+        p4 = plt.bar(ind, sorted_fear_tones, width, color='purple', bottom=sorted_sadness_tones+sorted_disgust_tones+sorted_anger_tones)
+        p5 = plt.bar(ind, sorted_joy_tones, width, color='yellow', bottom=sorted_sadness_tones+sorted_disgust_tones+sorted_anger_tones+sorted_fear_tones)
 
         plt.xlabel('Article')
         plt.ylabel('Scores')
         plt.title('Stacked Mood Scores by Article for Topic '+str(topic))
-        plt.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Sadness', 'Disgust', 'Anger', 'Fear', 'Joy'))
+        # import pdb; pdb.set_trace()
+        plt.rcParams.update({'font.size': 20})
+        plt.legend((p1[0], p2[0], p3[0], p4[0], p5[0]), ('Sadness', 'Disgust', 'Anger', 'Fear', 'Joy'), prop={'size':10})
         figs.append(fig)
 
     return figs
@@ -254,7 +341,8 @@ def pos_neg_plot(topic_dict):
         plt.xlabel('Article')
         plt.ylabel('Scores')
         plt.title('Stacked Positive/Negative Scores by Article for Topic '+str(topic))
-        plt.legend((p1[0], p2[0]), ('Positive', 'Negative'))
+        plt.rcParams.update({'font.size': 22})
+        plt.legend((p1[0], p2[0]), ('Positive', 'Negative'), prop={'size':10})
 
         figs.append(fig)
 

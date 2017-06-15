@@ -35,6 +35,7 @@ def from_bucket(filename, path, mongo_db=False):
 
 if __name__ == '__main__':
     # takes in filename as arg and path to current directory
+    # Example filename: dsiprojectdata/rss_feeds_new.tar
     filename, mongo_db = argv[1], argv[2]
     path = '..'
     result = from_bucket(filename, path, mongo_db=mongo_db)
