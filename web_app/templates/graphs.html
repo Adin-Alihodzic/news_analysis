@@ -38,15 +38,29 @@
 
   <body>
   <div class="container">
+    <h1><strong>Select a Topic</strong></h1>
+    <p>
+      Use the the graph below to select a topic you would like to learn more about and then input that topic number below the graph to go to that topic's page.
+      At the top left of the graph you can input a topic or you can hover/click the topic bubbles on the left hand side.
+      Hovering/clicking on a topic will change the words that appear on the right side. These are the top words associated with that topic.
+      The red bar indicates how many times that word appears in the topic, whereas the gray area after the red bar indicates how many times that word shows up in all topics.
+      Appove that, you will see a "relevance metric". The formula "2" at the bottom right of the graph explains what this metric means mathematically.
+      Verbally, this metric allows you to see the top words in relation to the topic and in relation to all topics.
+      A relevance metric of 1 shows you words whose most related topic is the topic you have selected, with no regard to how often it shows up in other topics.
+      A relevance meter of 0 shows you words whose most related topic is the topic you have selected and doesn't show up in other topics very often.
+      I recommend using a relevance metric of 0.2 at first and mess around with it after you get a good sense of what each topic is.
+      Keep in mind the topics will all change everytime the LDA model is updated.
+      To learn more about how this graph was created go to the "Home" page or visit my <a href="https://github.com/iamianM/news_analysis">github</a>.
+    </p>
 
-        {{ pyLDAvis_html | safe }}
+    {{ pyLDAvis_html | safe }}
 
-        <form action = "/graphs_input" method="POST" >
-            <ul >
-                Input a Topic from above to see more information: <input name="topic" type ="number" />
-                <input type ="submit" value="submit" /> </li>
-            </ul>
-        </form>
+    <form action = "/graphs_input" method="POST" >
+        <ul >
+            <strong>Input a Topic from above to see more information: </strong><input name="topic" type ="number" />
+            <input type ="submit" value="submit" /> </li>
+        </ul>
+    </form>
 
   </div><!-- /.container -->
 
