@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import matplotlib.pyplot as plt
+import datetime
 
 from working_with_data2.make_df import get_df, fix_cnn, clean_df, process_articles, convert_date
 from working_with_data2.data_exploration import all_length_hist, article_length_hist, dictionary_and_corpus, run_lda, mood_plots, pos_neg_plot, coverage_by_site_by_topic
@@ -13,11 +14,6 @@ import pyLDAvis.gensim
 
 class NewsAnalysis:
     def __init__(self):
-        self.topic_texts = None
-        self.sentiment_texts = None
-        self.quote_texts = None
-        self.tweet_texts = None
-
         self.dictionary = None
         self.corpus = None
 
@@ -68,11 +64,6 @@ class NewsAnalysis:
         df = df[pd.notnull(df['article_text'])]
         df = df.reset_index(drop=True)
 
-        self.topic_texts = [text.split(' ') for text in df['topic_texts']]
-        self.sentiment_texts = [text.split(' ') for text in df['sentiment_texts']]
-        self.quote_texts = [text.split(' ') if type(text) != float else '' for text in df['quote_texts']]
-        self.tweet_texts = [text.split(' ') if type(text) != float else '' for text in df['tweet_texts']]
-
         return df
 
     def to_csv(self, df, filename):
@@ -96,11 +87,11 @@ class NewsAnalysis:
         -------
         df (with headline, article, quotes, tweets as new columns): Pre-processed tokenized texts.
         """
-        self.topic_texts, self.sentiment_texts, self.quote_texts, self.tweet_texts = process_articles(df)
-        df['topic_texts'] = [' '.join(text) for text in self.topic_texts]
-        df['sentiment_texts'] = [' '.join(text) for text in self.sentiment_texts]
-        df['quote_texts'] = [' '.join(text) for text in self.quote_texts]
-        df['tweet_texts'] = [' '.join(text) for text in self.tweet_texts]
+        topic_texts, sentiment_texts, quote_texts, tweet_texts = process_articles(df)
+        df['topic_texts'] = [' '.join(text) for text in topic_texts]
+        df['sentiment_texts'] = [' '.join(text) for text in sentiment_texts]
+        df['quote_texts'] = [' '.join(text) for text in quote_texts]
+        df['tweet_texts'] = [' '.join(text) for text in tweet_texts]
 
         return df
 
@@ -131,36 +122,36 @@ class NewsAnalysis:
     def make_plots(self, df):
         '''Makes all plots used in web app'''
         # Length Histograms
-        # topic_length_hist, quote_length_hist = all_length_hist(df, self.topic_texts, self.sentiment_texts, self.quote_texts, self.tweet_texts)
-        # topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist.png')
-        # quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist.png')
-        #
-        # # Mood Bar Graphs
-        # mood_figs = mood_plots(self.topic_dict)
-        # for i,mood_fig in enumerate(mood_figs):
-        #     mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'.png')
-        #
-        # # Positive/Negative Bar Charts
-        # pos_neg_figs = pos_neg_plot(self.topic_dict)
-        # for i,pos_neg_fig in enumerate(pos_neg_figs):
-        #     pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'.png')
+        topic_length_hist, quote_length_hist = all_length_hist(df)
+        topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist_'+datetime.datetime.now().date().isoformat()+'.png')
+        quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist_'+datetime.datetime.now().date().isoformat()+'.png')
 
-        coverage_figs = coverage_by_site_by_topic(self.topic_dict)
+        # Mood Bar Graphs
+        mood_figs = mood_plots(self.topic_dict)
+        for i,mood_fig in enumerate(mood_figs):
+            mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+
+        # Positive/Negative Bar Charts
+        pos_neg_figs = pos_neg_plot(self.topic_dict)
+        for i,pos_neg_fig in enumerate(pos_neg_figs):
+            pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+
+        coverage_figs = coverage_by_site_by_topic(df,self.topic_dict)
         for i,coverage_fig in enumerate(coverage_figs):
-            coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'.png')
-        #
-        # # Bokeh plots
-        # components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
-        # for topic in range(self.lda_model.num_topics):
-        #     components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
-        # pickle.dump(components_dict, open('web_app/bokeh_plots/components_dict.pkl', 'wb'))
+            coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+
+        # Bokeh plots
+        components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
+        for topic in range(self.lda_model.num_topics):
+            components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
+        pickle.dump(components_dict, open('web_app/bokeh_plots/components_dict_'+datetime.datetime.now().date().isoformat()+'.pkl', 'wb'))
 
         # Word Clouds
-        # cloud_figs = make_clouds(self.topic_texts, self.lda_model)
-        # for i,cloud_fig in enumerate(cloud_figs):
-        #     cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'.png')
+        cloud_figs = make_clouds(df, self.lda_model)
+        for i,cloud_fig in enumerate(cloud_figs):
+            cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
 
-    def run_lda_model(self, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=20, iterations=400):
+    def run_lda_model(self,df, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=20, iterations=400):
         """
         Function to get LDA model. Following are the steps we take:
 
@@ -180,17 +171,19 @@ class NewsAnalysis:
         -------
         lda_model: Calculated LDA model
         """
-        self.dictionary, self.corpus = dictionary_and_corpus(self.topic_texts, no_below=no_below, no_above=no_above)
+        topic_texts = [text.split(' ') for text in df['topic_texts']]
 
-        self.lda_model, vis_data, fig = run_lda(self.topic_texts, self.dictionary, self.corpus, topn=topn,
+        self.dictionary, self.corpus = dictionary_and_corpus(topic_texts, no_below=no_below, no_above=no_above)
+
+        self.lda_model, vis_data, fig = run_lda(topic_texts, self.dictionary, self.corpus, topn=topn,
                             num_topics=num_topics, weight_threshold=weight_threshold, K=K, T=T, passes=20, iterations=400)
 
 
-        pickle.dump(self.lda_model, open('pickles/lda_model.pkl', 'wb'))
+        pickle.dump(self.lda_model, open('pickles/lda_model_'+datetime.datetime.now().date().isoformat()+'.pkl', 'wb'))
 
-        pyLDAvis.save_html(vis_data, 'web_app/plots/pyLDAvis_'+str(self.lda_model.num_topics)+'_topics.html')
+        pyLDAvis.save_html(vis_data, 'web_app/plots/pyLDAvis_'+datetime.datetime.now().date().isoformat()+'_topics.html')
 
-        fig.savefig('web_app/static/img/hdp_topic_probabilities.png', dpi=fig.dpi)
+        fig.savefig('web_app/static/img/hdp_topic_probabilities_'+datetime.datetime.now().date().isoformat()+'.png', dpi=fig.dpi)
 
         self.lda_topics = self.lda_model.show_topics(num_topics=-1, num_words=100000,formatted=False)
 
@@ -219,11 +212,11 @@ class NewsAnalysis:
         topic_dict
         """
         self.topic_dict, self.all_article_topics, self.sentiment_of_words, fig = \
-                        topic_values(df, self.topic_texts, self.sentiment_texts, self.lda_model)
+                        topic_values(df, self.lda_model)
 
-        pickle.dump(self.topic_dict, open('pickles/topic_dict.pkl', 'wb'))
+        pickle.dump(self.topic_dict, open('pickles/topic_dict_'+datetime.datetime.now().date().isoformat()+'.pkl', 'wb'))
 
-        fig.savefig('web_app/static/img/coverage_by_topics.png', dpi=fig.dpi)
+        fig.savefig('web_app/static/img/coverage_by_topics_'+datetime.datetime.now().date().isoformat()+'.png', dpi=fig.dpi)
 
         return self.topic_dict
 
@@ -232,43 +225,44 @@ class NewsAnalysis:
 
 
 if __name__ == '__main__':
+    make_csv = False
+
     na = NewsAnalysis()
+    df = None
 
-    # df = na.from_mongo('rss_feeds_new')
-    # df = df[pd.notnull(df['article_text'])]
-    # df = df.reset_index(drop=True)
+    if make_csv:
+        df = na.from_mongo('rss_feeds_new')
+        df = df[pd.notnull(df['article_text'])]
+        df = df.reset_index(drop=True)
+
+        df = na.process_texts(df)
+
+        df = convert_date(df)
+        df = df.reset_index(drop=True)
+
+        df_tones = pd.read_csv('data/rss_with_tones_in_df_fixed_time.csv')
+        df = na.get_tones(df, df_tones)
+        na.to_csv(df, 'data/rss_feeds_newest_with_tones.csv')
+
+    else:
+        df = na.from_csv('data/rss_feeds_newest_with_tones.csv')
+
+    df = df[pd.notnull(df['Anger'])]
+    df = df.reset_index(drop=True)
+
+    print('Making LDA model. This will take awhile...')
+    lda_model = na.run_lda_model(no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=40, iterations=2000)
+
+    # with open('pickles/lda_model.pkl', 'rb') as f:
+    #     lda_model = pickle.load(f)
     #
-    # df = na.process_texts(df)
-
-    # df = na.from_csv('data/rss_feeds_last.csv')
-    df = na.from_csv('data/rss_with_tones_in_df_fixed_time.csv')
-
-    # df = convert_date(df)
-    # df = df.reset_index(drop=True)
-
-    # df_tones = pd.read_csv('data/rss_feeds_with_tones3.csv')
-    # df = na.get_tones(df, df_tones)
-    # na.to_csv(df, 'data/rss_feeds_new_from_NA.csv')
-
-    # df = na.from_csv('data/rss_feeds_with_tones.csv')
-
-    # df = na.from_csv('data/rss_feeds_with_tones2.csv')
-    # df = df[pd.notnull(df['tones'])]
-    # df = df.reset_index(drop=True)
-
-    # print('Making LDA model. This will take awhile...')
-    # lda_model = na.run_lda_model(no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=40, iterations=2000)
-
-    with open('pickles/lda_model.pkl', 'rb') as f:
-        lda_model = pickle.load(f)
-
-    na.get_lda_model(lda_model)
-
-    # print('Making topic dictionary model. This will also take awhile...')
-    # topic_dict = na.get_topic_values(df)
-    with open('pickles/topic_dict.pkl', 'rb') as f:
-        topic_dict = pickle.load(f)
-    na.get_topic_dict(topic_dict)
-
-    print('Making Plots. This takes a really long time...')
-    na.make_plots(df)
+    # na.get_lda_model(lda_model)
+    #
+    print('Making topic dictionary model. This will also take awhile...')
+    topic_dict = na.get_topic_values(df)
+    # with open('pickles/topic_dict.pkl', 'rb') as f:
+    #     topic_dict = pickle.load(f)
+    # na.get_topic_dict(topic_dict)
+    #
+    # print('Making Plots. This takes a really long time...')
+    # na.make_plots(df)

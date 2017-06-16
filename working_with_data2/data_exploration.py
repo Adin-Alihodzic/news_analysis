@@ -33,6 +33,11 @@ def all_length_hist(df, topic_texts, sentiment_texts, quote_texts, tweet_texts):
     -------
     fig1, fig2: histogram of topic and sentiment texts. historgram of quotes.
     """
+    topic_texts = [text.split(' ') for text in df['topic_texts']]
+    sentiment_texts = [text.split(' ') for text in df['sentiment_texts']]
+    quote_texts = [text.split(' ') for text in df['quote_texts']]
+    tweet_texts = [text.split(' ') for text in df['tweet_texts']]
+
     site_word_length = {source: {'topic': [], 'sentiment': [], 'quote': [], 'tweet': []} for source in df['source'].unique()}
     for source in df['source'].unique():
         new_df = df[df['source'] == source]
@@ -55,7 +60,8 @@ def all_length_hist(df, topic_texts, sentiment_texts, quote_texts, tweet_texts):
         plt.hist(site_word_length[source]['topic'], normed=True, alpha=0.5, bins=100, label='topic words')
         plt.hist(site_word_length[source]['sentiment'], normed=True, alpha=0.5, bins=100, label='sentiment words')
         plt.title('Length of Sentiment and Topic words for '+source)
-        plt.legend(loc='upper right')
+        plt.rcParams.update({'font.size': 20})
+        plt.legend(loc='upper right', prop={'size':10})
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     fig2 = plt.figure(figsize=(16,12), dpi=300)
@@ -64,7 +70,8 @@ def all_length_hist(df, topic_texts, sentiment_texts, quote_texts, tweet_texts):
         plt.hist(site_word_length[source]['quote'][1:], normed=True, alpha=0.5, bins=30, label='quote words')
         # plt.hist(site_word_length[source]['tweet'][1:], normed=True, alpha=0.5, bins=30, label='tweet words')
         plt.title('Length of Quote and Tweet words for '+source)
-        plt.legend(loc='upper right')
+        plt.rcParams.update({'font.size': 20})
+        plt.legend(loc='upper right', prop={'size':10})
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig1, fig2
@@ -82,6 +89,7 @@ def article_length_hist(df):
         plt.subplot(4,3,i+1)
         plt.hist(site_article_length[source], normed=True, bins=100)
         plt.title('Article Length for'+source)
+        plt.rcParams.update({'font.size': 20})
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig
@@ -99,6 +107,7 @@ def quote_length_hist(df):
         plt.subplot(4,3,i+1)
         plt.hist(site_article_length[source], normed=True, bins=100)
         plt.title('Article Length for'+source)
+        plt.rcParams.update({'font.size': 20})
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig
@@ -116,6 +125,7 @@ def tweet_length_hist(df):
         plt.subplot(4,3,i+1)
         plt.hist(site_article_length[source], normed=True, bins=100)
         plt.title('Article Length '+source)
+        plt.rcParams.update({'font.size': 20})
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig
@@ -155,7 +165,8 @@ def relevant_words_hist(df, topic_texts, sentiment_texts, quote_texts, tweet_tex
         plt.subplot(4,3,i+1)
         plt.bar(ind, np.array(counts[source])[:3]/counts[source][3], label='counts')
         plt.title('Length of Sentiment and Topic words for '+source)
-        plt.legend(loc='upper right')
+        plt.rcParams.update({'font.size': 20})
+        plt.legend(loc='upper right', prop={'size':10})
     plt.subplots_adjust(hspace=0.4, wspace=0.4)
 
     return fig
@@ -179,40 +190,11 @@ def coverage_by_site_hist(model, df):
         plt.xlabel('Topic')
         plt.ylabel('Coverage')
         plt.title('Coverage by Topic for '+source)
+        plt.rcParams.update({'font.size': 20})
 
         figs.append(fig)
 
     return figs
-
-
-# def coverage_by_site_by_topic(df_all, topic_dict):
-#     df_count = df_all.groupby('source')['date_published'].count()
-#     figs = []
-#     for topic in range(len(topic_dict)):
-#         dates = topic_dict[topic]['date_published']
-#         sources = topic_dict[topic]['source']
-#         df = pd.DataFrame({'date_published' : pd.Series(dates), 'source': pd.Series(sources)})
-#         df = df[df['date_published'] > date(2017,5,18)]
-#         idx_dates = pd.date_range(df['date_published'].dt.date.min().isoformat(), df['date_published'].dt.date.max().isoformat())
-#
-#         fig = plt.figure(figsize=(16,12), dpi=300)
-#         ax1 = fig.add_subplot(111)
-#         for i,source in enumerate(np.unique(sources)):
-#             new_df = df[df['source'] == source]
-#
-#             new_df = new_df['date_published'].dt.date.value_counts()
-#             new_df.sort_index(inplace=True)
-#             new_df = new_df.reindex(idx_dates, fill_value=0)
-#             new_df = new_df/df_count['cnn']
-#             x = new_df.index
-#             y = new_df.values
-#             ax1.plot(x, y, label=source)
-#         fig.autofmt_xdate()
-#         plt.rcParams.update({'font.size': 22})
-#         plt.legend(loc='upper left', prop={'size':10})
-#
-#         figs.append(fig)
-#     return figs
 
 
 def coverage_by_site_by_topic(df_all, topic_dict):
@@ -223,16 +205,17 @@ def coverage_by_site_by_topic(df_all, topic_dict):
     # for topic in range(1):
         dates = topic_dict[topic]['date_published']
         sources = topic_dict[topic]['source']
-        df = pd.DataFrame({'date_published' : pd.Series(dates), 'source': pd.Series(sources)})
+        topic_probs = topic_dict[topic]['topic_prob']
+        df = pd.DataFrame({'date_published' : pd.Series(dates), 'source': pd.Series(sources), 'topic_prob': pd.Series(topic_probs)})
         df = df[df['date_published'] > date(2017,5,18)]
         y_max = (df['date_published'].dt.date.value_counts()/df_count.values.max()).max()
         idx_dates = pd.date_range(df['date_published'].dt.date.min().isoformat(), df['date_published'].dt.date.max().isoformat())
 
-        fig = plt.figure(figsize=(16,12), dpi=300)
+        fig = plt.figure(figsize=(24,20), dpi=300)
         ax_all = fig.add_subplot(111)
         # ax_all.set_xlabel('date')
-        ax_all.set_ylabel('% of all articles')
-        ax_all.set_title('Coverage of Topic by Site')
+        ax_all.set_ylabel('Coverage').set_fontsize(20)
+        ax_all.set_title('Coverage of Topic '+str(topic)+' by Site').set_fontsize(20)
         for k,v in ax_all.spines.items():
             v.set_visible(False)
         ax_all.set_xticks([])
@@ -242,33 +225,33 @@ def coverage_by_site_by_topic(df_all, topic_dict):
         for i,source in enumerate(np.unique(df['source'])):
             ax = fig.add_subplot(12,1,i+1)
             new_df = df[df['source'] == source]
+            new_df = new_df.reset_index(drop=True)
 
-            new_df = new_df['date_published'].dt.date.value_counts()
-            new_df.sort_index(inplace=True)
-            new_df = new_df.reindex(idx_dates, fill_value=0)
-            new_df = new_df/df_count['cnn']
-            x = new_df.index
-            y = new_df.values
-            ax.plot(x, y, label=source, color=colors[source])
-            ax.legend(loc='upper left', prop={'size':10})
+            mean_topic_prob = np.mean(new_df['topic_prob'].values)
+
+            date_counts_df = new_df['date_published'].dt.date.value_counts()
+            date_counts_df.sort_index(inplace=True)
+            date_counts_df = date_counts_df.reindex(idx_dates, fill_value=0)
+            date_counts_df = date_counts_df*mean_topic_prob/df_count[source]
+            x = date_counts_df.index
+            y = date_counts_df.values
+            ax.plot(x, y, label=source, color=colors[source], linewidth=3.0)
+            ax.legend(loc='upper left', prop={'size':20})
             for k,v in ax.spines.items():
                 v.set_visible(False)
             ax.set_xticks([])
             ax.set_yticks([])
             axes.append(ax)
-            y_lim.append(new_df.values.max())
+            y_lim.append(date_counts_df.values.max())
         for ax in axes:
             ax.set_ylim(0,max(y_lim))
-        # plt.xlabel('date')
-        # plt.ylabel('% of overall articles')
-        # ax_all.set_xlabel('date')
-        # ax_all.set_ylabel('% of all articles')
-        # ax_all.set_title('Coverage of Topic by Site')
+
         axes[-1].set_xticks(idx_dates)
         xfmt = mdates.DateFormatter('%m-%d')
         axes[-1].xaxis.set_major_formatter(xfmt)
-        fig.autofmt_xdate()
-        plt.rcParams.update({'font.size': 10})
+#         fig.autofmt_xdate()
+        labels = ax.get_xticklabels()
+        plt.setp(labels, rotation=30, fontsize=15)
 
         figs.append(fig)
     return figs
@@ -442,6 +425,7 @@ def run_lda(topic_texts, dictionary, corpus, topn=10000, num_topics=None, weight
     plt.title('Topic Probabilities')
     plt.xlabel('Topic')
     plt.ylabel('Probability')
+    plt.rcParams.update({'font.size': 22})
 
     if num_topics == None:
         total_weight = sum(topic_weights)

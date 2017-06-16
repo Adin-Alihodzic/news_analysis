@@ -11,6 +11,7 @@ import codecs
 from newspaper import Article
 from gensim.summarization import summarize
 import datetime
+from datetime import date
 import ast
 import numpy as np
 import subprocess
@@ -58,7 +59,7 @@ app = Flask(__name__)
 # tab = db['predicted_events']
 
 
-def get_components(topic_dict, topic):
+def get_components(topic):
     with open('bokeh_plots/components_dict.pkl', 'rb') as f:
         components_dict = pickle.load(f)
     script = components_dict[topic]['script']
@@ -119,8 +120,6 @@ def get_sentiment(word):
     mean_pos = 0
     mean_neg = 0
     mean_obj = 0
-    score = 0
-    bias = 0
     for similar_words in swn.senti_synsets(word):
         mean_pos += similar_words.pos_score()
         mean_neg += similar_words.neg_score()
@@ -130,11 +129,9 @@ def get_sentiment(word):
         mean_pos = mean_pos/size
         mean_neg = mean_neg/size
         mean_obj = mean_obj/size
-        score = (mean_pos - mean_neg)*(1-mean_obj)
-        bias = (mean_pos + mean_neg) * (1-mean_obj)
     return mean_pos, mean_neg, mean_obj
 
-def get_article_sentiment(topic_texts, sentiment_texts):
+def get_article_sentiment(lda_model, sentiment_texts):
     sentiment_texts_words = set()
     for i in range(len(sentiment_texts)):
         sentiment_texts_words = sentiment_texts_words | set(sentiment_texts[i])
@@ -142,21 +139,31 @@ def get_article_sentiment(topic_texts, sentiment_texts):
 
     relevant_types = ['JJ', 'VB', 'RB']
 
+    lda_topics = lda_model.show_topics(num_topics=-1, num_words=10000,formatted=False)
+    topic_words = []
+    for word_and_prob in lda_topics[0][1]:
+        word = word_and_prob[0]
+        for word, word_type in nltk.pos_tag([word]):
+            for type in relevant_types:
+                if word_type.startswith(type):
+                    topic_words.append(word)
+
     s_pos = 0
     s_neg = 0
     s_obj = 0
     relevant_word_count = 0
     for word in sentiment_texts_words:
-        for word, word_type in nltk.pos_tag([word]):
-            if word_type in relevant_types:
-                relevant_word_count += 1
-                pos, neg, obj = get_sentiment(word)
-                if pos == 0 and neg == 0:
-                    pass
-                else:
-                    s_pos += pos
-                    s_neg += neg
-                    s_obj += obj
+        if word in topic_words:
+            for word, word_type in nltk.pos_tag([word]):
+                if word_type in relevant_types:
+                    pos, neg, obj = get_sentiment(word)
+                    if pos == 0 and neg == 0:
+                        pass
+                    else:
+                        relevant_word_count += 1
+                        s_pos += pos
+                        s_neg += neg
+                        s_obj += obj
     if relevant_word_count != 0:
          s_pos, s_neg, s_obj = s_pos/relevant_word_count, s_neg/relevant_word_count, s_obj/relevant_word_count
 
@@ -188,33 +195,37 @@ def predict():
 
             topic_texts, sentiment_texts, quote_texts, tweet_texts = process_articles(df)
 
-            pos, neg, obj = get_article_sentiment(topic_texts, sentiment_texts)
-            score = (pos+neg)*(1-obj)
-
             with open('../pickles/lda_model.pkl', 'rb') as f:
                 lda_model = pickle.load(f)
+
+            pos, neg, obj = get_article_sentiment(lda_model, sentiment_texts)
+            score = (pos+neg)*(1-obj)
 
             article_bow = lda_model.id2word.doc2bow(topic_texts[0])
             article_topics = lda_model[article_bow]
 
-            max_topic = 0
-            max_prob = 0
+            topic = 0
+            prob = 0
             for topic_and_prob in article_topics:
-                topic = topic_and_prob[0]
-                prob = topic_and_prob[1]
-                if prob > max_prob:
-                    max_topic = topic
-                    max_prob = prob
+                temp_topic = topic_and_prob[0]
+                temp_prob = topic_and_prob[1]
+                print(temp_topic, temp_prob)
+                if temp_prob > prob:
+                    topic = temp_topic
+                    prob = temp_prob
+            topic += 1
 
             with open('../pickles/topic_dict.pkl', 'rb') as f:
                 topic_dict = pickle.load(f)
 
-            print(sentiment_texts[0])
-            json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts[0]), sentences=False)
-            tones = parse_toneanalyzer_response(json_response_sentiment)
-            analytical_score = tones[1]['Analytical']
+            try:
+                json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts[0]), sentences=False)
+                tones = parse_toneanalyzer_response(json_response_sentiment)
+                analytical_score = tones[1]['Analytical']
 
-            script, div = make_bokeh_plot(topic_dict, topic, new_article=[analytical_score, score])
+                script, div = make_bokeh_plot(topic_dict, topic, new_article=[score, analytical_score])
+            except:
+                script, div = get_components(topic=topic)
 
             pos_all = []
             neg_all = []
@@ -227,6 +238,9 @@ def predict():
                 score_all.append((pos_score+neg_score)*(1-obj_score))
 
             pos_mean, neg_mean, obj_mean, score_mean = np.mean(pos_all), np.mean(neg_all), np.mean(obj_all), np.mean(score_all)
+
+            js_resources = INLINE.render_js()
+            css_resources = INLINE.render_css()
 
             return render_template('prediction_worked.html',
                                     article_text=article_text,
@@ -242,8 +256,10 @@ def predict():
                                     neg_mean="{0:.3f}".format(neg_mean),
                                     obj_mean="{0:.3f}".format(obj_mean),
                                     score_mean="{0:.3f}".format(score_mean),
-                                    topic=max_topic,
-                                    topic_prob=max_prob,
+                                    topic=topic,
+                                    topic_prob="{0:.3f}".format(prob*10),
+                                    js_resources=js_resources,
+                                    css_resources=css_resources,
                                     script=script,
                                     div=div)
         else:
@@ -273,15 +289,19 @@ def graphs_input():
     if request.method == 'POST':
         topic = int(request.form['topic'])
         # return render_template('graphs.html', plot='bokeh_plots/topic'+str(selectedValue)+'.html')
-        # script, div = get_components(topic=topic)
+        script, div = get_components(topic=topic)
     # return render_template('graphs.html', plot='./bokeh_plots/topic0.html')
 
         with open('../pickles/topic_dict.pkl', 'rb') as f:
             topic_dict = pickle.load(f)
 
-        
+        dates = topic_dict[topic]['date_published']
+        df = pd.DataFrame({'date_published' : pd.Series(dates)})
+        df = df[df['date_published'] > date(2017,5,18)]
+        df = df['date_published'].dt.date.value_counts()
+        max_date = df.index[np.argmax(df.values)]
 
-        script, div = make_bokeh_plot(topic_dict, topic)
+        # script, div = make_bokeh_plot(topic_dict, topic)
 
         anger_tones = topic_dict[topic]['Anger']
         disgust_tones = topic_dict[topic]['Disgust']
@@ -316,7 +336,9 @@ def graphs_input():
                                 pos_neg_plot='src="../static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(topic)+'.png"',
                                 tone_mean=tone_mean[idx],
                                 tone=tone[idx],
-                                color='color="'+colors[idx]+'"')
+                                color='color="'+colors[idx]+'"',
+                                max_date=max_date,
+                                date_plot='src="../static/img/coverage_plots/coverage_plot_by_topic'+str(topic)+'.png"')
         return encode_utf8(html)
 
 # about page

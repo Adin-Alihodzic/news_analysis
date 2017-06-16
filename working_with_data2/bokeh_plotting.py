@@ -73,10 +73,10 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
     # colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (0,100,0), (0, 0, 0), (100, 25, 200), (255, 255, 0), (0, 255, 255), (255, 0, 255), (128, 128, 128), (0, 0, 128), (240,230,140)]
     # colors = ['#ff0000', '#00ff00', '#0000ff', '#006400', '#000000', '#6419c8', '#ffff00', '#00ffff', '	#ff00ff', '#808080', '#000080', '#f0e68c']
     # colors = ['Red', 'Lime', 'Blue', 'DarkGreen', 'Black', 'No Name', 'Yellow', 'Aqua', 'Fuchsia', 'Grey', 'Navy', 'Khaki']
-    # sources = ['cnn', 'abc', 'fox', 'nyt', 'reuters', 'wapo', 'huffpo', 'esquire', 'rollingstone', 'cbs', '538', 'washtimes']
+    sources = ['cnn', 'abc', 'fox', 'nyt', 'reuters', 'wapo', 'huffpo', 'esquire', 'rollingstone', 'cbs', '538', 'washtimes']
     colors = {'538': '#ff0000', 'abc': '#00ff00', 'cbs': '#0000ff', 'cnn': '#006400', 'esquire': '#000000', 'fox': '#6419c8', 'huffpo': '#ffff00', 'nyt': '#00ffff', 'reuters': '#ff00ff', 'rollingstone': '#808080', 'wapo': '#000080', 'washtimes': '#f0e68c'}
 
-    sources = np.unique(topic_dict[topic]['source'])
+    # sources = np.unique(topic_dict[topic]['source'])
 
     pos_by_site = {site: [] for site in sources}
     neg_by_site = {site: [] for site in sources}
@@ -92,7 +92,16 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
     for site in sources:
         indices = [j for j, s in enumerate(topic_dict[topic]['source']) if s == site and topic_dict[topic]['Analytical'][j] != 0 and topic_dict[topic]['length'][j] > 200]
         if indices == []:
-            pass
+            pos_by_site[site] = [0]
+            neg_by_site[site] = [0]
+            obj_by_site[site] = [0]
+            score_by_site[site] = [0]
+            analytical_by_site[site] = [0]
+            size_by_site[site] = [0]
+            url_by_site[site] = ['']
+            headline_by_site[site] = ['']
+            site_by_site[site] = [site]
+            color_by_site[site] = [colors[site]]
         else:
             pos_by_site[site] = np.array(topic_dict[topic]['pos'])[indices]
             neg_by_site[site] = np.array(topic_dict[topic]['neg'])[indices]
@@ -107,7 +116,7 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
 
 
     source = ColumnDataSource(data=dict(
-        x=np.concatenate([np.array(score_by_site[x])/max(obj_by_site[site]) for x in sorted(score_by_site)]),
+        x=np.concatenate([np.array(score_by_site[x]) for x in sorted(score_by_site)]),
         y=np.concatenate([analytical_by_site[x] for x in sorted(analytical_by_site)]),
         pos=np.concatenate([pos_by_site[x] for x in sorted(pos_by_site)]),
         neg=np.concatenate([neg_by_site[x] for x in sorted(neg_by_site)]),
@@ -435,6 +444,7 @@ def make_clouds(topic_texts, lda_model):
     2. Get Word Clouds of each topic.
     3. Save all word clouds to use in web app.
     """
+    topic_texts = [text.split(' ') for text in df['topic_texts']]
     # Topic 0 refers to all articles
     figs = []
 

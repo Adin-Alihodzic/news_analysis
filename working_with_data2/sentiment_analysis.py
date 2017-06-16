@@ -151,7 +151,7 @@ def article_topics_and_topic_coverage(model, topic_texts, tokenized=False):
 
     return all_article_topics, fig
 
-def topic_values(df, topic_texts, sentiment_texts, lda_model):
+def topic_values(df, lda_model):
     """
     Function to get dictionary containing all elements of a topic
     Following are the steps we take:
@@ -165,6 +165,8 @@ def topic_values(df, topic_texts, sentiment_texts, lda_model):
     topic_dict
     """
     num_topics = lda_model.num_topics
+    topic_texts = [text.split(' ') for text in df['topic_texts']]
+    sentiment_texts = [text.split(' ') for text in df['sentiment_texts']]
 
     print('Getting Sentiment...')
     sentiment_of_words = word_sentiment(lda_model, sentiment_texts)
@@ -309,7 +311,7 @@ def get_new_tones(df, prev_df):
                 agreeableness.append(temp[2]['Agreeableness'])
                 emotional_range.append(temp[2]['Emotional Range'])
             except:
-                print('API not working')
+                print('Something actually went wrong!')
                 anger.append(np.nan)
                 disgust.append(np.nan)
                 fear.append(np.nan)

@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>FRAUD DETECTOR</title>
+    <title>News Analysis</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -35,6 +35,11 @@
         BODY {text-align: center}
     </STYLE>
 
+    {{ js_resources|indent(4)|safe }}
+
+    {{ css_resources|indent(4)|safe }}
+
+
   </head>
     <h1>Below is an analysis of your article</h1>
 
@@ -46,10 +51,13 @@
     </div>
 
     <h2>Sentiment</h2>
-
-    <div style="width: 85%; display: inline-block;">
-        {{ div | safe }}
-        {{ script | safe }}
+    <div class="container">
+      <p>
+        Below is table of the sentiment scores for your article with a comparision of how all other articles scored in relation to this topic.
+        Below that is an interactive plot of all the articles for this topic.
+        To learn more about the plot or to learn more about the topic, please visit the topics page by clicking the button at the bottom of the page or entering the topic number into the "Topic Selector".
+        If your article was able to be scored by IBM Watson's ToneAnalyzerV3 then it will appear as a black diamond in the plot and legend.
+      </p>
     </div>
 
     <center>
@@ -81,10 +89,14 @@
       </tr>
       </table>
     </center>
+
+    <div style="width: 85%; display: inline-block;">
+        {{ div | safe }}
+        {{ script | safe }}
+    </div>
     <hr>
 
-    <h2>Topic #{{ topic | safe }}</h2>
-    <p>Your article was talking about Topic #{{ topic | safe }} with a probability of {{ topic_prob | safe }}.</p>
+    <h2>Your article was talking about Topic #{{ topic | safe }} with a probability of {{ topic_prob | safe }}%.</h2>
     <hr>
 
     <form action = "/graphs_input" method="POST" >
@@ -111,7 +123,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/home">News Analyzer</a>
+          <a class="navbar-brand" href="/">News Analysis</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">

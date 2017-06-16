@@ -45,6 +45,7 @@
   <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:8%">
     <h3 class="w3-bar-item">Jump To:</h3>
     <a href="#plot" class="w3-bar-item w3-button">Plot</a>
+    <a href="#coverage" class="w3-bar-item w3-button">Coverage</a>
     <a href="#mood" class="w3-bar-item w3-button">Mood</a>
     <a href="#pos_neg" class="w3-bar-item w3-button">Sentiment</a>
     <a href="#word_cloud" class="w3-bar-item w3-button">Word Cloud</a>
@@ -57,7 +58,7 @@
       </div>
 
       <div class="col-sm-8 text-left">
-        <h1 align="center">Topic {{ topic_num }}</h1>
+        <h1 align="center"><strong>Topic {{ topic_num }}</strong></h1>
         <p>
           This page is dedicated to Topic {{ topic_num }}. I have decided not to label these topics in an attempt to be as subjective as possible.
           I leave it up to you to decide what this topic is about.
@@ -68,7 +69,7 @@
         <hr>
         <hr>
         <hr>
-        <h2 align="center">Interactive Plot</h2>
+        <h2 align="center"><strong>Interactive Plot</strong></h2>
         <p>
           The following plot was created in Bokeh.
           The tab "By Article" plots the Anaytical Score of an article vs. the Overall Score of an article.
@@ -97,11 +98,24 @@
         </div>
 
 
+        <a name="coverage"></a>
+        <hr>
+        <hr>
+        <hr>
+        <h2><strong>Coverage</strong>: This Topic was talked about the most on <font size="10" blue>{{ max_date }}</font></h2>
+        <p>
+
+        </p>
+        <p>
+          The plot below charts the coverage of this topic by all news sources that had any articles about it.
+        </p>
+        <img {{ date_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+
         <a name="mood"></a>
         <hr>
         <hr>
         <hr>
-        <h2>Mood: This Topic's Mood is <font size="10" {{ color }}>{{ tone }}</font></h2>
+        <h2><strong>Mood</strong>: This Topic's Mood is <font size="10" {{ color }}>{{ tone }}</font></h2>
         <p>
           The average mood per article for this topic was {{ tone }}, with a probability of {{ tone_mean }}.
           This mood was found from the IBM Watson Tone Analyzer. As well as determining the analytical score used above, it also determines emotional tones.
@@ -118,7 +132,7 @@
         <hr>
         <hr>
         <hr>
-        <h2>Positive/Negative Scores</h2>
+        <h2><strong>Positive/Negative Scores</strong></h2>
         <p>
           Below is a bar chart of the positive score (blue) for each article going up and the negative score (red) going down.
           These scores were found by summing the positive together and summing the negative scores together for each sentiment word in an article for this topic.
@@ -130,7 +144,7 @@
         <hr>
         <hr>
         <hr>
-        <h2>Word Cloud</h2>
+        <h2><strong>Word Cloud</strong></h2>
         <p>
           Below is a Word Cloud of the topic words for this topic.
           The topic words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
@@ -151,9 +165,6 @@
                   <input type ="submit" value="submit" /> </li>
               </ul>
           </form>
-        </div>
-        <div class="well">
-          <p>ADS</p>
         </div>
       </div>
     </div>

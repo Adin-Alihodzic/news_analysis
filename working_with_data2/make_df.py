@@ -96,8 +96,6 @@ def convert_date(df):
     df['date_published'] = new_date
     df = df.reset_index(drop=True)
 
-    # fig = df['date_published'].groupby(new_df[~new_df['date_published'].isnull()]['date_published'].dt.day).count().plot(kind="bar")
-
     return df
 
 def check_str(x):
