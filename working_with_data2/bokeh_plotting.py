@@ -436,7 +436,7 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
 
     return script, div
 
-def make_clouds(topic_texts, lda_model):
+def make_clouds(df, lda_model):
     """
     Function to get Word Clouds. Following are the steps we take:
 

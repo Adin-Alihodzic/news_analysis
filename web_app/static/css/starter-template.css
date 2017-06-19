@@ -5,3 +5,9 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+ol {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+  margin-left:25px;
+}

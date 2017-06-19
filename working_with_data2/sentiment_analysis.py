@@ -276,10 +276,12 @@ def get_new_tones(df, prev_df):
     extraversion = []
     agreeableness = []
     emotional_range = []
+    count = -1
     for url, sentiment_texts in zip(df['url'], df['sentiment_texts']):
         tone_idx = [i for i in prev_df[prev_df['url'] == url].index]
         if tone_idx != []:
             tone_idx = tone_idx[0]
+            print('Old: ',tone_idx)
             anger.append(prev_df['Anger'][tone_idx])
             disgust.append(prev_df['Disgust'][tone_idx])
             fear.append(prev_df['Fear'][tone_idx])
@@ -295,7 +297,9 @@ def get_new_tones(df, prev_df):
             emotional_range.append(prev_df['Emotional Range'][tone_idx])
         else:
             try:
-                json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts), sentences=False)
+                count += 1
+                print('New: ',count)
+                json_response_sentiment = tone_analyzer.tone(text=sentiment_texts, sentences=False)
                 temp = parse_toneanalyzer_response(json_response_sentiment)
                 anger.append(temp[0]['Anger'])
                 disgust.append(temp[0]['Disgust'])
@@ -342,6 +346,86 @@ def get_new_tones(df, prev_df):
     df['Emotional Range'] = emotional_range
 
     return df
+
+
+# anger = []
+# disgust = []
+# fear = []
+# joy = []
+# sadness = []
+# analytical = []
+# confident = []
+# tentative = []
+# openness = []
+# conscientiousness = []
+# extraversion = []
+# agreeableness = []
+# emotional_range = []
+# count = -1
+# for url, sentiment_texts in zip(df['url'], df['sentiment_texts']):
+#     count += 1
+#     try:
+#         print(count)
+#         json_response_sentiment = tone_analyzer.tone(text=sentiment_texts, sentences=False)
+#         temp = parse_toneanalyzer_response(json_response_sentiment)
+#         anger.append(temp[0]['Anger'])
+#         disgust.append(temp[0]['Disgust'])
+#         fear.append(temp[0]['Fear'])
+#         joy.append(temp[0]['Joy'])
+#         sadness.append(temp[0]['Sadness'])
+#         analytical.append(temp[1]['Analytical'])
+#         confident.append(temp[1]['Confident'])
+#         tentative.append(temp[1]['Tentative'])
+#         openness.append(temp[2]['Openness'])
+#         conscientiousness.append(temp[2]['Conscientiousness'])
+#         extraversion.append(temp[2]['Extraversion'])
+#         agreeableness.append(temp[2]['Agreeableness'])
+#         emotional_range.append(temp[2]['Emotional Range'])
+#     except:
+#         print('Something actually went wrong!')
+#         anger.append(np.nan)
+#         disgust.append(np.nan)
+#         fear.append(np.nan)
+#         joy.append(np.nan)
+#         sadness.append(np.nan)
+#         analytical.append(np.nan)
+#         confident.append(np.nan)
+#         tentative.append(np.nan)
+#         openness.append(np.nan)
+#         conscientiousness.append(np.nan)
+#         extraversion.append(np.nan)
+#         agreeableness.append(np.nan)
+#         emotional_range.append(np.nan)
+
+
+# anger = []
+# disgust = []
+# fear = []
+# joy = []
+# sadness = []
+# analytical = []
+# confident = []
+# tentative = []
+# openness = []
+# conscientiousness = []
+# extraversion = []
+# agreeableness = []
+# emotional_range = []
+# for tone in prev_df['tones']:
+#     temp = ast.literal_eval(tone)
+#     anger.append(temp[0]['Anger'])
+#     disgust.append(temp[0]['Disgust'])
+#     fear.append(temp[0]['Fear'])
+#     joy.append(temp[0]['Joy'])
+#     sadness.append(temp[0]['Sadness'])
+#     analytical.append(temp[1]['Analytical'])
+#     confident.append(temp[1]['Confident'])
+#     tentative.append(temp[1]['Tentative'])
+#     openness.append(temp[2]['Openness'])
+#     conscientiousness.append(temp[2]['Conscientiousness'])
+#     extraversion.append(temp[2]['Extraversion'])
+#     agreeableness.append(temp[2]['Agreeableness'])
+#     emotional_range.append(temp[2]['Emotional Range'])
 
 
 

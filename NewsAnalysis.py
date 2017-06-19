@@ -5,11 +5,15 @@ import matplotlib.pyplot as plt
 import datetime
 
 from working_with_data2.make_df import get_df, fix_cnn, clean_df, process_articles, convert_date
-from working_with_data2.data_exploration import all_length_hist, article_length_hist, dictionary_and_corpus, run_lda, mood_plots, pos_neg_plot, coverage_by_site_by_topic
+from working_with_data2.data_exploration import all_length_hist, article_length_hist, dictionary_and_corpus, run_lda, mood_plots, mood_plots_by_site, pos_neg_plot, pos_neg_by_site_plot, coverage_by_site_by_topic
 from working_with_data2.sentiment_analysis import topic_values, get_new_tones
 from working_with_data2.bokeh_plotting import make_bokeh_plot, make_clouds
 
 import pyLDAvis.gensim
+
+# Used to distinguish new models from past
+# identifier = datetime.datetime.now().date().isoformat()+'_55_topics_400_passes'
+identifier = '2017-06-18_55_topics_400_passes'
 
 
 class NewsAnalysis:
@@ -121,35 +125,43 @@ class NewsAnalysis:
 
     def make_plots(self, df):
         '''Makes all plots used in web app'''
-        # Length Histograms
-        topic_length_hist, quote_length_hist = all_length_hist(df)
-        topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist_'+datetime.datetime.now().date().isoformat()+'.png')
-        quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist_'+datetime.datetime.now().date().isoformat()+'.png')
-
+        # # Length Histograms
+        # topic_length_hist, quote_length_hist = all_length_hist(df)
+        # topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist_'+identifier+'.png')
+        # quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist_'+identifier+'.png')
+        #
         # Mood Bar Graphs
-        mood_figs = mood_plots(self.topic_dict)
-        for i,mood_fig in enumerate(mood_figs):
-            mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+        # mood_figs = mood_plots(self.topic_dict)
+        # for i,mood_fig in enumerate(mood_figs):
+        #     mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # Positive/Negative Bar Charts
-        pos_neg_figs = pos_neg_plot(self.topic_dict)
-        for i,pos_neg_fig in enumerate(pos_neg_figs):
-            pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+        mood_by_site_figs = mood_plots_by_site(self.topic_dict)
+        for i,mood_by_site_fig in enumerate(mood_by_site_figs):
+            mood_by_site_fig.savefig('web_app/static/img/mood_plots/mood_by_site_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        coverage_figs = coverage_by_site_by_topic(df,self.topic_dict)
-        for i,coverage_fig in enumerate(coverage_figs):
-            coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+        # # Positive/Negative Bar Charts
+        # pos_neg_figs = pos_neg_plot(self.topic_dict)
+        # for i,pos_neg_fig in enumerate(pos_neg_figs):
+        #     pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # Bokeh plots
-        components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
-        for topic in range(self.lda_model.num_topics):
-            components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
-        pickle.dump(components_dict, open('web_app/bokeh_plots/components_dict_'+datetime.datetime.now().date().isoformat()+'.pkl', 'wb'))
+        # pos_neg_by_site_figs = pos_neg_by_site_plot(self.topic_dict)
+        # for i,pos_neg_by_site_fig in enumerate(pos_neg_by_site_figs):
+        #     pos_neg_by_site_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # Word Clouds
-        cloud_figs = make_clouds(df, self.lda_model)
-        for i,cloud_fig in enumerate(cloud_figs):
-            cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'_'+datetime.datetime.now().date().isoformat()+'.png')
+        # coverage_figs = coverage_by_site_by_topic(df,self.topic_dict)
+        # for i,coverage_fig in enumerate(coverage_figs):
+        #     coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'_'+identifier+'.png')
+        #
+        # # Bokeh plots
+        # components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
+        # for topic in range(self.lda_model.num_topics):
+        #     components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
+        # pickle.dump(components_dict, open('web_app/static/img/bokeh_plots/components_dict_'+identifier+'.pkl', 'wb'))
+
+        # # Word Clouds
+        # cloud_figs = make_clouds(df, self.lda_model)
+        # for i,cloud_fig in enumerate(cloud_figs):
+        #     cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'_'+identifier+'.png')
 
     def run_lda_model(self,df, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=20, iterations=400):
         """
@@ -179,11 +191,11 @@ class NewsAnalysis:
                             num_topics=num_topics, weight_threshold=weight_threshold, K=K, T=T, passes=20, iterations=400)
 
 
-        pickle.dump(self.lda_model, open('pickles/lda_model_'+datetime.datetime.now().date().isoformat()+'.pkl', 'wb'))
+        pickle.dump(self.lda_model, open('pickles/lda_model_'+identifier+'.pkl', 'wb'))
 
-        pyLDAvis.save_html(vis_data, 'web_app/plots/pyLDAvis_'+datetime.datetime.now().date().isoformat()+'_topics.html')
+        pyLDAvis.save_html(vis_data, 'web_app/static/img/pyLDAvis_graphs/pyLDAvis_'+identifier+'.html')
 
-        fig.savefig('web_app/static/img/hdp_topic_probabilities_'+datetime.datetime.now().date().isoformat()+'.png', dpi=fig.dpi)
+        fig.savefig('web_app/static/img/hdp_topic_probabilities_'+identifier+'.png', dpi=fig.dpi)
 
         self.lda_topics = self.lda_model.show_topics(num_topics=-1, num_words=100000,formatted=False)
 
@@ -214,9 +226,9 @@ class NewsAnalysis:
         self.topic_dict, self.all_article_topics, self.sentiment_of_words, fig = \
                         topic_values(df, self.lda_model)
 
-        pickle.dump(self.topic_dict, open('pickles/topic_dict_'+datetime.datetime.now().date().isoformat()+'.pkl', 'wb'))
+        pickle.dump(self.topic_dict, open('pickles/topic_dict_'+identifier+'.pkl', 'wb'))
 
-        fig.savefig('web_app/static/img/coverage_by_topics_'+datetime.datetime.now().date().isoformat()+'.png', dpi=fig.dpi)
+        fig.savefig('web_app/static/img/coverage_by_topics_'+identifier+'.png', dpi=fig.dpi)
 
         return self.topic_dict
 
@@ -245,24 +257,28 @@ if __name__ == '__main__':
         na.to_csv(df, 'data/rss_feeds_newest_with_tones.csv')
 
     else:
-        df = na.from_csv('data/rss_feeds_newest_with_tones.csv')
+        df = na.from_csv('data/rss_feeds_final.csv')
+
+
+    df = convert_date(df)
+    df = df.reset_index(drop=True)
 
     df = df[pd.notnull(df['Anger'])]
     df = df.reset_index(drop=True)
 
-    print('Making LDA model. This will take awhile...')
-    lda_model = na.run_lda_model(no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=40, iterations=2000)
+    # print('Making LDA model. This will take awhile...')
+    # lda_model = na.run_lda_model(df, no_below=20, no_above=0.5, topn=10000, num_topics=55, weight_threshold=0.25, K=15, T=150, passes=1000, iterations=10000)
 
-    # with open('pickles/lda_model.pkl', 'rb') as f:
-    #     lda_model = pickle.load(f)
+    with open('pickles/lda_model_'+identifier+'.pkl', 'rb') as f:
+        lda_model = pickle.load(f)
+
+    na.get_lda_model(lda_model)
     #
-    # na.get_lda_model(lda_model)
+    # print('Making topic dictionary model. This will also take awhile...')
+    # topic_dict = na.get_topic_values(df)
+    with open('pickles/topic_dict_'+identifier+'.pkl', 'rb') as f:
+        topic_dict = pickle.load(f)
+    na.get_topic_dict(topic_dict)
     #
-    print('Making topic dictionary model. This will also take awhile...')
-    topic_dict = na.get_topic_values(df)
-    # with open('pickles/topic_dict.pkl', 'rb') as f:
-    #     topic_dict = pickle.load(f)
-    # na.get_topic_dict(topic_dict)
-    #
-    # print('Making Plots. This takes a really long time...')
-    # na.make_plots(df)
+    print('Making Plots. This takes a really long time...')
+    na.make_plots(df)

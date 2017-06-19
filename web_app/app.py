@@ -58,9 +58,12 @@ app = Flask(__name__)
 # db = client['events']
 # tab = db['predicted_events']
 
+# This is the identifier used to create plots in NewsAnalysis.py and will be used to access those plots
+# identifier = datetime.datetime.now().date().isoformat()+'_55_topics_400_passes'
+identifier = '2017-06-18_55_topics_400_passes'
 
 def get_components(topic):
-    with open('bokeh_plots/components_dict.pkl', 'rb') as f:
+    with open('static/img/bokeh_plots/components_dict_'+identifier+'.pkl', 'rb') as f:
         components_dict = pickle.load(f)
     script = components_dict[topic]['script']
     div = components_dict[topic]['div']
@@ -84,7 +87,8 @@ def get_article(url):
             print('Article would not download!')
             return False, ()
     except:
-        return 'Article would not download!'
+        print('Article would not download!')
+        return False, ()
     try:
         headline = a.title
     except:
@@ -173,7 +177,15 @@ def get_article_sentiment(lda_model, sentiment_texts):
 # home page
 @app.route('/')
 def index():
-    return render_template('home.html')
+    vis_plot = codecs.open("static/img/pyLDAvis_graphs/pyLDAvis_2017-06-18_55_topics_400_passes.html", 'r')
+
+    js_resources = INLINE.render_js()
+    css_resources = INLINE.render_css()
+    pyLDAvis_html = vis_plot.read()
+    return render_template('home.html',
+                            js_resources=js_resources,
+                            css_resources=css_resources,
+                            pyLDAvis_html=pyLDAvis_html)
 
 # Button for prediction page
 @app.route('/input')
@@ -185,9 +197,9 @@ def results():
 def predict():
     if request.method == 'POST':
         url = str(request.form['url'])
-        result = get_article(url)
-        if result[0] != False:
-            (article_text, headline, author, date_published) = result[1]
+        worked, result = get_article(url)
+        if worked:
+            (article_text, headline, author, date_published) = result
             summary = get_summary(article_text)
 
             data = {'article_text': article_text, 'headline': headline}
@@ -215,7 +227,7 @@ def predict():
                     prob = temp_prob
             topic += 1
 
-            with open('../pickles/topic_dict.pkl', 'rb') as f:
+            with open('../pickles/topic_dict_'+identifier+'.pkl', 'rb') as f:
                 topic_dict = pickle.load(f)
 
             try:
@@ -271,7 +283,7 @@ def predict():
 def graphs():
     with open('../pickles/lda_model.pkl', 'rb') as f:
         lda_model = pickle.load(f)
-    vis_plot = codecs.open("plots/pyLDAvis_"+str(lda_model.num_topics)+"_topics.html", 'r')
+    vis_plot = codecs.open("static/img/pyLDAvis_graphs/pyLDAvis_"+identifier+".html", 'r')
     pyLDAvis_html = vis_plot.read()
 
     js_resources = INLINE.render_js()
@@ -292,7 +304,7 @@ def graphs_input():
         script, div = get_components(topic=topic)
     # return render_template('graphs.html', plot='./bokeh_plots/topic0.html')
 
-        with open('../pickles/topic_dict.pkl', 'rb') as f:
+        with open('../pickles/topic_dict_'+identifier+'.pkl', 'rb') as f:
             topic_dict = pickle.load(f)
 
         dates = topic_dict[topic]['date_published']
@@ -331,14 +343,14 @@ def graphs_input():
                                 script=script,
                                 div=div,
                                 topic_num=topic,
-                                word_cloud='src="../static/img/wordclouds/wordcloud_topic'+str(topic)+'.png"',
-                                mood_plot='src="../static/img/mood_plots/mood_plot_by_topic'+str(topic)+'.png"',
-                                pos_neg_plot='src="../static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(topic)+'.png"',
+                                word_cloud='src="../static/img/wordclouds/wordcloud_topic'+str(topic)+'_'+identifier+'.png"',
+                                mood_plot='src="../static/img/mood_plots/mood_by_site_plot_by_topic'+str(topic)+'_'+identifier+'.png"',
+                                pos_neg_plot='src="../static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic'+str(topic)+'_'+identifier+'.png"',
                                 tone_mean=tone_mean[idx],
                                 tone=tone[idx],
                                 color='color="'+colors[idx]+'"',
                                 max_date=max_date,
-                                date_plot='src="../static/img/coverage_plots/coverage_plot_by_topic'+str(topic)+'.png"')
+                                date_plot='src="../static/img/coverage_plots/coverage_plot_by_topic'+str(topic)+'_'+identifier+'.png"')
         return encode_utf8(html)
 
 # about page

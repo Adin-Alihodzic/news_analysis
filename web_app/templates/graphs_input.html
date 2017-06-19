@@ -72,14 +72,14 @@
         <h2 align="center"><strong>Interactive Plot</strong></h2>
         <p>
           The following plot was created in Bokeh.
-          The tab "By Article" plots the Anaytical Score of an article vs. the Overall Score of an article.
-          The tab "By Site" plots the mean of the Anaytical Score vs. the mean of the Overall Score for each site and has an ellipse around it indicating the standard deviation of the two variables.
+          The tab "By Article" plots the Anaytical Score of an article vs. the Sentiment Score of an article.
+          The tab "By Site" plots the mean of the Anaytical Score vs. the mean of the Sentiment Score for each site and has an ellipse around it indicating the standard deviation of the two variables.
           The Analytical score was determined using IBM Watson's Tone Analyzer. To learn more about that program please visit
           <a href="https://www.ibm.com/watson/developercloud/doc/tone-analyzer/science.html">their website</a>
           or visit my <a href="https://github.com/iamianM/news_analysis">github</a>, where I go into depth about how I generated these plots.
-          The Overall score was determined using SentiWordNet. This is a state-of-the-art sentiment classification library, which determines a words positive, negative and objective score.
+          The Sentiment score was determined using SentiWordNet. This is a state-of-the-art sentiment classification library, which determines a words positive, negative and objective score.
           More about how it works can be found <a href="http://nmis.isti.cnr.it/sebastiani/Publications/LREC10.pdf">here</a> or at my <a href="https://github.com/iamianM/news_analysis">github</a>.
-          The Overall score is determined using the equation: \[ \texttt{overall_score} = (\texttt{positive_score} - \texttt{negative_score}) * (1 - \texttt{objective_score}) \]
+          The Sentiment score is determined using the equation: \[ \texttt{Sentiment_score} = (\texttt{positive_score} - \texttt{negative_score}) * (1 - \texttt{objective_score}) \]
         </p>
         <p>
           The plot below is interactive. At the top left, you can switch between the "By Article" and "By Site" tabs. At the top left is the toolbar.
