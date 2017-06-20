@@ -213,7 +213,7 @@ def predict():
 
             topic = 0
             prob = 0
-            for topic_and_prob in article_topics:
+            for topic_and_topic_dicprob in article_topics:
                 temp_topic = topic_and_prob[0]
                 temp_prob = topic_and_prob[1]
                 print(temp_topic, temp_prob)
