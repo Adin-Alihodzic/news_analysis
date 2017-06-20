@@ -41,61 +41,57 @@
   <body>
 
   <!-- Sidebar -->
-  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:8%">
+  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:7%">
     <h3 class="w3-bar-item">Menu</h3>
     <a href="#intro" class="w3-bar-item w3-button">Introduction</a>
-    <a href="#data" class="w3-bar-item w3-button">Data</a>
-    <a href="#about" class="w3-bar-item w3-button">About</a>
+    <a href="#mot" class="w3-bar-item w3-button">Motivations</a>
+    <a href="#vis" class="w3-bar-item w3-button">Visualization</a>
+    <a href="#top_30" class="w3-bar-item w3-button">Topic 30</a>
+    <ul class="w3-sidebar-submenu">
+      <ui class="w3-sidebar-menu-item">
+        <a href="#sum" class="w3-sidebar-menu-button">Summary</a>
+      </ui>
+      <ui class="w3-sidebar-menu-item">
+        <a href="#cov" class="w3-sidebar-menu-button">Coverage</a>
+      </ui>
+      <ui class="w3-sidebar-menu-item">
+        <a href="#mood" class="w3-sidebar-menu-button">Mood</a>
+      </ui>
+      <ui class="w3-sidebar-menu-item">
+        <a href="#sent" class="w3-sidebar-menu-button">Sentiment</a>
+      </ui>
+      <ui class="w3-sidebar-menu-item">
+        <a href="#graph" class="w3-sidebar-menu-button">Graph</a>
+      </ui>
+      </ui>
+    </ul>
+    <a href="#predict" class="w3-bar-item w3-button">Predict</a>
   </div>
 
 
   <div class="container">
     <h1 align="center"><strong>News Analysis</strong></h1>
+
+    <span class="anchor" id="intro"></span>
+    <h2>Introduction</h2>
+    <p>
+      This Home Page is dedicated to helping you understand how this website works.
+      I pick 1 out of 55 political topics discussed over the course of a month and present tools you can use to better understand the topic and how it is covered.
+      After going through the example, I encourage you to select another topic that interests you and explore its page.
+    </p>
+
+    <span class="anchor" id="mot"></span>
     <h2>Motivations</h2>
     <p>
-      The aim of this project was to provide users with tools to examine American political news and the websites that post it, in an effort to help neutralize the biases different news organization may posses.
-      In an ever growing divided political climate, I think it is necessary to understand both sides of an arguement.
-      News sources claim they are unbiases, but many Americans do not believe that is so.
-      This project does not attempt to uncover their bias, but merely allow users to see how they cover and treat different topics.
-      Opinions in news sources are not the problem, but presenting those opinions as facts is.
-      This project examines how analytical, objective and opinionated certain news organizations are towards a topic.
-      You will see there is a linear relationship between analysis and opinions when it comes to articles and organizations.
-      This makes sense as artilces that examine a topic tend to give their opinion on the subject.
-      There are, however, some outliers that mostly examine or mostly give their opinion.
-      This project allows a user to decide for themselves whether they would like to read an analytical piece, opinion piece, neither or both.
+      The aim of this project was to provide users with tools to examine political news and the outlets that write it.
+      In a political climate growing ever more divided I think it is important for people to have the tools to compare news articles and organizations. I have developed tools that allow a user to compare news sites by their mood, sentiment, and objectivity toward certain topics.
+      A user can pick an analytical piece, opinionated piece, neither or both on a certain topic to read.
+      This allows one to be informed about the political topics in the news, how they are covered and in what way by different outlets.
       The hope is that a user can view all sides of an issue and come to a conclusion on their own about how they feel towards it.
     </p>
 
-    <h2>Introduction</h2>
-    <p>
-      This project uses Latent Dirichlet Allocation (LDA) to determine topics written about in online American political articles.
-      In LDA, each news article can be considered a mix of multiple topics and LDA assigns as set of topics to it with a probability of pertaining to that topic.
-      Each topic has a set of words related to it, also with probabilies of being related to that topic.
-      It is then assumed in LDA that articles with a high frequency of words that have high probabilities of being in a topic will themselves have a high probability of being in that topic.
-      This assumption is that the topic distribution has a sparse Dirichlet prior or that articles cover a small set of topics and that topics use a small set of words frequently.
-      There are, however, many words that are common in all articles, such as 'I', 'and', 'the', etc. We call these "stop-words" and they are removed before the LDA model is built.
-      In this project I also got rid of other words and characters that I found unnecessary, such as characters frequent in tweets or urls.
-      Also, I decided to remove all words that appear in more than 50% of articles, which helped distinguish the topics from each other more as there were many words that were included in most articles like 'Trump', 'election', 'politics', etc.
-      Words that appeared in less than 20 articles were also removed so that obscure or mispelled words did not effect the model.
-    </p>
-    <p>
-      LDA requires you to input how many topics you want it to create before creating the model. Since I am using all the articles I can get from my news source and the number of topics discussed can be any number, I had to determine how many topics to enter.
-      There were several attempts to approach this decision in a scientific way, but ultimately I just made several models with varying topics and picked the one that had the most distinguishable topics.
-      I believe this is an acceptable solution because the attempts I made to scientifically find a number of topics showed that there was a wide range of acceptable values.
-      The first attempt was to use Hierarchical Dirichlet Process (HDP) LDA, which is an extension of LDA designed to address the issue of not knowing the number of topics before hand.
-      The goal of HDP is to learn how many topics you need from the data. I used HDP to calculate 150 topics and determined the probability that each of those topics had in regards to the articles.
-      Unfortunatley I did not see an obvious decision in the number of topics to pick from this.
-      All topics had less than a 10% probability and decreased at a slow rate to around 5%.
-      The hope was to see a steep drop in probability and then an 'elbow', where the probability leveled off and we could determine the number of topics to be there.
-      The second attempt to resolve this issue was using a "coherence" metric.
-      The idea behind this is that some topics are more coherent than other or in other words people can interpret what one topic is over others.
-      To determine a topics coherence, I model was created using data collected from people who were told to rate a topic's coherence.
-      That and a web of word similarities is used. More about that can be learned <a href="http://svn.aksw.org/papers/2015/WSDM_Topic_Evaluation/public.pdf">here</a>.
-      I used this metric on LDA models created using topic number from 5 to 80.
-      The coherence value did not vary much between any of the models.
-    </p>
-
-    <h2>Example</h2>
+    <span class="anchor" id="vis"></span>
+    <h2>Topic Visualization</h2>
     <p>
       Below is the same graph you will see when you click the "Topic Selector" tab above.
       The left side of the graph is a visualization of the topics that have been determines using Latent Dirichlet Allocation (LDA).
@@ -106,6 +102,12 @@
 
     {{ pyLDAvis_html | safe }}
 
+    <form action = "/graphs_input" method="POST" >
+        <ul >
+            <strong>Learn more about a topic by entering its' number here: </strong><input name="topic" type ="number" />
+            <input type ="submit" value="submit" /> </li>
+        </ul>
+    </form>
 
     <div>
     <ol class="columns" data-columns="2">
@@ -144,20 +146,15 @@
         <li value=53>Puerto Rico Referendum</li>
     </ol>
     </div>
-
-    <form action = "/graphs_input" method="POST" >
-        <ul >
-            <strong>Learn more about a topic by entering its' number here: </strong><input name="topic" type ="number" />
-            <input type ="submit" value="submit" /> </li>
-        </ul>
-    </form>
     <hr>
 
-    <h2>Topic 30: Congressman Greg Gianforte "body-slams" a Reporter</h2>
+    <span class="anchor" id="top_30"></span>
+    <h2><strong>Topic 30</strong>: Congressman Greg Gianforte "body-slams" a Reporter</h2>
     <p>
       From now on I will be using Topic 30 as an example of the analysis I have made for every topic.
       I chose this topic because I believe it illustrates what I have tried to accomplish with this project very well and because I do not think anyone would dispute the topic description I have provided since this topic is very specific.
     </p>
+    <span class="anchor" id="sum"></span>
     <h3>Summary of Incident from Wikipedia</h3>
     <p>
       On May 24, 2017, the day before the U.S. House special election, Ben Jacobs, a political reporter for The Guardian newspaper who was covering the election, said that Gianforte assaulted him. Jacobs said that Gianforte "bodyslammed" him to the floor and broke the reporter's glasses. The Gianforte campaign was initially unapologetic, blaming the reporter, disputing the allegations, saying that Jacobs grabbed Gianforte's wrist, causing them both to fall to the ground. However, an audio recording of the incident appeared to support Jacobs's statement, and other reporters who were present at the scene corroborated Jacobs' version of events.
@@ -175,8 +172,8 @@
     On June 12, 2017, Gianforte pleaded guilty and was originally sentenced to four days in jail, to be completed in part through a work program. But because Gianforte was guilty of an assault charge, he was ineligible for the work program. The judge then switched the sentence to 40 hours of community service, 20 hours of anger management, 180-day deferred sentence, and a $300 fine along with an $85 court fee.
     </p>
 
-    <h3>Analysis</h3>
-    <h4>Coverage</h4>
+    <span class="anchor" id="cov"></span>
+    <h3>Coverage</h3>
     <p>
       First, I will go over the coverage of this topic by news source.
       As stated in the summary, Gianforte assulted the reporter on May 24th and plead guilty to the assult on June 12.
@@ -186,24 +183,72 @@
 
     <img src="../static/img/coverage_plots/coverage_plot_by_topic30_2017-06-18_55_topics_400_passes.png" class="img-responsive" alt="Cinque Terre" width="1200" height="800">
 
-    <h4>Mood</h4>
+    <span class="anchor" id="mood"></span>
+    <h3><strong>Mood</strong>: This Topic's Mood is <font size="10" color='green'>Disgust</font></h3>
+    <p>
+      The average mood per article for this topic was disgust, with a probability of 47.7%.
+      This mood was found from the IBM Watson Tone Analyzer. As well as determining the analytical score used above, it also determines emotional tones.
+      These emotional tones are Anger, Fear, Disgust, Sadness and Joy (and their corresponding colors in the graph: Red, Purple, Green, Blue and Yellow).
+      These tones are based on the theory of research pscholinguistics, a field of research that explores the relationship between linguistic behavior and psychological theories.
+    </p>
+    <p>
+      The plot below is a stacked bar chart of all mood scores per article for this topic. The scores were sorted for a better representation.
+    </p>
 
     <img src="../static/img/mood_plots/mood_by_site_plot_by_topic30_2017-06-18_55_topics_400_passes.png" class="img-responsive" alt="Cinque Terre" width="1200" height="800">
 
-    <h4>Sentiment</h4>
-
-    <img src="../static/img/pos_neg_plots/pos_neg_plot_by_site_by_topic30_2017-06-18_55_topics_400_passes.png" class="img-responsive" alt="Cinque Terre" width="1200" height="800">
-
+    <span class="anchor" id="sent"></span>
+    <h3>Sentiment</h3>
     <p>
-      Other resources provided are coverage, mood and sentiment analyses. The coverage analysis allows you to see how each of the 12 sites used in this project covered a certain topic.
-      The mood analysis uses IBM Watson's ToneAnalyzerV3 to get the probabilities of 5 different moods: Anger, Fear, Disgust, Sadness and Joy.
-      These tones are based on the theory of research pscholinguistics, a field of research that explores the relationship between linguistic behavior and psychological theories.
-      It is theorized that we can determine the tone of a person's speech by examining the words they use and the frequency at which they use them.
-      Since it is people who write these articles, it is possible that they're tone is reflected in their writing and by extension their opinion or bias.
-      The overall tone of the article was discussed
+      Below is a bar chart of the positive score (blue) for each article going up and the negative score (red) going down.
+      These scores were found by summing the positive together and summing the negative scores together for each sentiment word in an article for this topic.
+      The sentiment words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
     </p>
+
+    <img src="../static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic30_2017-06-18_55_topics_400_passes.png" class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+
+    <span class="anchor" id="graph"></span>
+    <h3>Interactive Graph</h3>
+    <p>
+      The plot below is interactive. At the top left, you can switch between the "By Article" and "By Site" tabs. At the top left is the toolbar.
+      Toggle these buttons on and off by clicking them. The buttons from left to right are: Pan, Wheel Zoom, Tap, and Hover. All are automatically set on except Wheel Zoom.
+      Pan allows you to move the graph around by clicking and moving you mouse. Wheel Zoom allows you to zoom in and out using the wheel on your mouse.
+      Tap allows you to open the articles url by clicking on it. Lastly, Hover shows you atributes about each article when you hover over it.
+      To the right of the graph you will see a Slider and a Checkbox Group. The slider allows you to change the probability threshold each article must have in relation to this topic.
+      Each article has a certain probability of being in each topic you saw on the Topic Choice page. The probability of each article being in this topic is visualized by the size of each articles bubble.
+      You will see as you move the Topic Probability slider closer to 1, the smaller bubbles will disappear. The checkbox allows you to select which site's articles you would like to view.
+      As you unselect site's their article bubble's will disappear. Clicking the site's checkbox again will make the site's bubbles reappear. The two tabs have the same interactivity except that the "By Site" tab does not have a slider and checkbox group.
+    </p>
+
+    <div style="width: 85%; display: inline-block;">
+        {{ div | safe }}
+        {{ script | safe }}
+    </div>
+
+    <span class="anchor" id="predict"></span>
+    <h2>Predict</h2>
+    <p>
+      Here you can input an article from any source and you will get an analysis about it.
+      The article's focus must be on American political news and have been created no earlier than 5/18/2017.
+      The analysis will not be meaningful on an article outside of these limitations.
+    </p>
+    <form action = "/predict" method="POST" >
+      <ul >
+          Enter the url of an article (this takes a little): <input name="url" type ="text" /><br>
+          <input type ="submit" value="submit" />
+      </ul>
+    </form>
+
   </div><!-- /.container -->
 
+  <style>
+  .anchor{
+    display: block;
+    height: 50px; /*same height as header*/
+    margin-top: -50px; /*same height as header*/
+    visibility: hidden;
+  }
+  </style>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">

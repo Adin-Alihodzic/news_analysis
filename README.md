@@ -6,7 +6,7 @@ A user can pick an analytical piece, opinionated piece, neither or both on a cer
 This allows one to be informed about the political topics in the news, how they are covered and in what way by different outlets.
 The hope is that a user can view all sides of an issue and come to a conclusion on their own about how they feel towards it.
 
- I extract the topics of a weeks worth of news articles and determine their bias score using the formula: `(postive_sentiment + negative_sentiment)*(1-objective_score)`, where the positive, negative and objective values are determined by the sentiment library and the word probability is the probability that word pertains to that topic and is determined by LDA.
+I extract the topics of a weeks worth of news articles and determine their bias score using the formula: `(postive_sentiment + negative_sentiment)*(1-objective_score)`, where the positive, negative and objective values are determined by the sentiment library and the word probability is the probability that word pertains to that topic and is determined by LDA.
 
 ## Data
 ### Scraping
@@ -58,7 +58,7 @@ The emotional tones were used in this project to determine the mood of a topic. 
 
 
 ## <a name="top_30"></a> Topic 30
-The section is all about topic 30. I will include graphs and charts related to this topic and discuss how it was made and why. There is also a full description of this topic and more at the home page of my [website][f]. I encourage you to visit that instead as it is an interactive page.
+The section is all about topic 30. I will include graphs and charts related to this topic and discuss how it was made and why. There is also a full description of this topic and more at the home page of my website [www.newsanalyticaltoolkit.com][f]. I encourage you to visit that instead as it is an interactive page.
 
 ### <a name="top_30_sum"></a> Summary
 Topic 30 is about Greg Gianforte, who won the U.S. House special election on May 25th, 2017. The day before that he was accused of “body-slamming” a reporter and on June 12, 2017, he pleaded guilty to the assault charge.
@@ -93,13 +93,6 @@ I used a Python interactive visualization library, [Bokeh][e], to create the gra
 * Determine whether the article is political
 * Use LDA in Spark to find topics of larger WSJ dataset
   * Get topics week to week over 2016 and maybe even further
-* Post bias calculations to reddit
-* Post bias calculations to twitter
-* Web site that displays results and description of models
-* Have web page that takes in data from user.
-  * Ex: display a topic to user and user inputs name of topic and whether it is liberal of conservative and to what degree.
-  * Ex: let user input url with their opinion of what the bias is.
-  * Ex: Display article to user and ask them what they think the bias is.
 
 
 

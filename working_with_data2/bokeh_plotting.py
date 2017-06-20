@@ -57,14 +57,14 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
               toolbar_location="above")
     p1.xaxis.axis_label_text_font_size = "20pt"
     p1.yaxis.axis_label_text_font_size = "20pt"
-    p1.title.text_font_size("20pt")
+    # p1.title.label_text_font_size("20pt")
 
     p2 = figure(plot_width=1200, plot_height=800,
                 tools=["tap, pan, wheel_zoom",hover2], title=title,
               toolbar_location="above")
     p2.xaxis.axis_label_text_font_size = "20pt"
     p2.yaxis.axis_label_text_font_size = "20pt"
-    p2.title.text_font_size("20pt")
+    # p2.title.label_text_font_size("20pt")
     # p.toolbar.active_drag = 'auto'
 
     a = 0.6
@@ -108,7 +108,7 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
             pos_by_site[site] = np.array(topic_dict[topic]['pos'])[indices]
             neg_by_site[site] = np.array(topic_dict[topic]['neg'])[indices]
             obj_by_site[site] = np.array(topic_dict[topic]['obj'])[indices]
-            score_by_site[site] = (np.array(pos_by_site[site]) + np.array(pos_by_site[site])) * (1 - np.array(topic_dict[topic]['obj'])[indices])/2
+            score_by_site[site] = (np.array(pos_by_site[site]) + np.array(pos_by_site[site])) * (1 - np.array(topic_dict[topic]['obj'])[indices])
             analytical_by_site[site] = np.array(topic_dict[topic]['Analytical'])[indices]
             size_by_site[site] = [50*topic for topic in np.array(topic_dict[topic]['topic_prob'])[indices]]
             url_by_site[site] = np.array(topic_dict[topic]['url'])[indices]

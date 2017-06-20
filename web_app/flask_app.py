@@ -15,6 +15,8 @@ from datetime import date
 import ast
 import numpy as np
 import subprocess
+import matplotlib.pyplot as plt
+import uuid
 
 import json
 import pandas as pd
@@ -168,6 +170,26 @@ def get_article_sentiment(lda_model, sentiment_texts):
 
     return s_pos, s_neg, s_obj
 
+def make_mood_plot(tones, name):
+    hist_tuple = (tones[0]['Anger'], tones[0]['Disgust'], tones[0]['Fear'], tones[0]['Joy'], tones[0]['Sadness'])
+    X_axis_legends_tuple = ('Anger', 'Disgust', 'Fear', 'Joy', 'Sadness')
+
+    a = 1.0
+    colors = [(1, 0, 0, a), (0, 1, 0, a), (128.0/255, 0, 128.0/255, a), (1, 1, 0, a), (0, 0 , 1, a)]
+    n_groups = 5
+    fig = plt.figure(figsize=(16,12), dpi=300)
+    index = np.arange(n_groups)
+    bar_width = 0.35
+    opacity = 1.0
+    rects1 = plt.bar(index, hist_tuple, bar_width,
+                     alpha=opacity,
+                     color=colors)
+    plt.xlabel('Emotional tone')
+    plt.ylabel('Scores')
+    plt.title('Emotional tones and their scores')
+    plt.xticks(index, X_axis_legends_tuple)
+    plt.rcParams.update({'font.size': 30})
+    fig.savefig('/home/mcian91/news_analysis/web_app/predicted_images/'+name+'.png')
 
 # home page
 @app.route('/')
@@ -177,10 +199,14 @@ def index():
     js_resources = INLINE.render_js()
     css_resources = INLINE.render_css()
     pyLDAvis_html = vis_plot.read()
+    script, div = get_components(topic=30)
+
     return render_template('home.html',
                             js_resources=js_resources,
                             css_resources=css_resources,
-                            pyLDAvis_html=pyLDAvis_html)
+                            pyLDAvis_html=pyLDAvis_html,
+                            script=script,
+                            div=div)
 
 # Button for prediction page
 @app.route('/input')
@@ -225,12 +251,15 @@ def predict():
             with open('/home/mcian91/news_analysis/pickles/topic_dict_'+identifier+'.pkl', 'rb') as f:
                 topic_dict = pickle.load(f)
 
+            analytical = -1
+            name = uuid.uuid4()
             try:
                 json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts[0]), sentences=False)
                 tones = parse_toneanalyzer_response(json_response_sentiment)
-                analytical_score = tones[1]['Analytical']
+                make_mood_plot(tones, str(name))
+                analytical = tones[1]['Analytical']
 
-                script, div = make_bokeh_plot(topic_dict, topic, new_article=[score, analytical_score])
+                script, div = make_bokeh_plot(topic_dict, topic, new_article=[score, analytical])
             except Exception as e:
                 print(e)
                 script, div = get_components(topic=topic)
@@ -239,13 +268,37 @@ def predict():
             neg_all = []
             obj_all = []
             score_all = []
-            for pos_score, neg_score, obj_score in zip(topic_dict[topic]['pos'],topic_dict[topic]['neg'],topic_dict[topic]['obj']):
+            analytical_all = []
+            for pos_score, neg_score, obj_score, analytical_score in zip(topic_dict[topic]['pos'],topic_dict[topic]['neg'],topic_dict[topic]['obj'], topic_dict[topic]['Analytical']):
                 pos_all.append(pos_score)
                 neg_all.append(neg_score)
                 obj_all.append(obj_score)
                 score_all.append((pos_score+neg_score)*(1-obj_score))
+                analytical_all.append(analytical_score)
 
-            pos_mean, neg_mean, obj_mean, score_mean = np.mean(pos_all), np.mean(neg_all), np.mean(obj_all), np.mean(score_all)
+            pos_mean, neg_mean, obj_mean, score_mean, analytical_mean = np.mean(pos_all), np.mean(neg_all), np.mean(obj_all), np.mean(score_all), np.mean(analytical_all)
+
+            anger_tones = topic_dict[topic]['Anger']
+            disgust_tones = topic_dict[topic]['Disgust']
+            fear_tones = topic_dict[topic]['Fear']
+            joy_tones = topic_dict[topic]['Joy']
+            sadness_tones = topic_dict[topic]['Sadness']
+            analytical_score = topic_dict[topic]['Analytical']
+
+            tone_mean = []
+            for i in range(5):
+                tone_mean.append(np.mean(anger_tones))
+                tone_mean.append(np.mean(disgust_tones))
+                tone_mean.append(np.mean(fear_tones))
+                tone_mean.append(np.mean(joy_tones))
+                tone_mean.append(np.mean(sadness_tones))
+
+            colors = ['red', 'green', 'purple', 'yellow', 'blue']
+            tone = ['Anger', 'Disgust', 'Fear', 'Joy', 'Sadness']
+            idx = np.argmax(tone_mean)
+
+            my_tone = [tones[0]['Anger'], tones[0]['Disgust'], tones[0]['Fear'], tones[0]['Joy'], tones[0]['Sadness']]
+            my_idx = np.argmax(my_tone)
 
             js_resources = INLINE.render_js()
             css_resources = INLINE.render_css()
@@ -260,16 +313,25 @@ def predict():
                                     neg="{0:.3f}".format(neg),
                                     obj="{0:.3f}".format(obj),
                                     score="{0:.3f}".format(score),
+                                    analytical="{0:.3f}".format(analytical),
                                     pos_mean="{0:.3f}".format(pos_mean),
                                     neg_mean="{0:.3f}".format(neg_mean),
                                     obj_mean="{0:.3f}".format(obj_mean),
                                     score_mean="{0:.3f}".format(score_mean),
+                                    analytical_mean="{0:.3f}".format(analytical_mean),
                                     topic=topic,
                                     topic_prob="{0:.3f}".format(prob*100),
+                                    tone_mean="{0:.1f}".format(tone_mean[idx]*100),
+                                    tone=tone[idx],
+                                    color='color="'+colors[idx]+'"',
+                                    my_tone_mean="{0:.1f}".format(my_tone[my_idx]*100),
+                                    my_tone=tone[my_idx],
+                                    my_color='color="'+colors[my_idx]+'"',
                                     js_resources=js_resources,
                                     css_resources=css_resources,
                                     script=script,
-                                    div=div)
+                                    div=div,
+                                    mood_plot='src="/home/mcian91/news_analysis/web_app/predicted_images/'+str(name)+'.png"',)
         else:
 
             return render_template('prediction_failed.html')
@@ -342,7 +404,7 @@ def graphs_input():
                                 word_cloud='src="../static/img/wordclouds/wordcloud_topic'+str(topic)+'_'+identifier+'.png"',
                                 mood_plot='src="../static/img/mood_plots/mood_by_site_plot_by_topic'+str(topic)+'_'+identifier+'.png"',
                                 pos_neg_plot='src="../static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic'+str(topic)+'_'+identifier+'.png"',
-                                tone_mean=tone_mean[idx],
+                                tone_mean="{0:.1f}".format(tone_mean[idx]*100),
                                 tone=tone[idx],
                                 color='color="'+colors[idx]+'"',
                                 max_date=max_date,

@@ -50,13 +50,30 @@
       <hr>
     </div>
 
+    <h2>Topic</h2>
+    <p>Your article was talking about Topic #{{ topic | safe }} with a probability of {{ topic_prob | safe }}%.</p>
+
+    <form action = "/graphs_input" method="POST" >
+        <ul >
+            <button name="topic" type="submit" value={{ topic | safe }}>Click this button to view an see more information about your articles topic.</button>
+        </ul>
+    </form>
+
+    <h2><strong>Mood</strong>: The Most Common Mood for this Topic was <font size="10" {{ color }}>{{ tone }}</font></h2>
+    <p>
+      Your article had a mood of <font size="5" {{ my_color }}>{{ my_tone }}</font>.
+    </p>
+    <center>
+      <img {{ mood_plot | safe }} class="img-responsive" alt="Mood Failed" width="1200" height="800">
+    </center>
+
     <h2>Sentiment</h2>
     <div class="container">
       <p>
         Below is table of the sentiment scores for your article with a comparision of how all other articles scored in relation to this topic.
         Below that is an interactive plot of all the articles for this topic.
         To learn more about the plot or to learn more about the topic, please visit the topics page by clicking the button at the bottom of the page or entering the topic number into the "Topic Selector".
-        If your article was able to be scored by IBM Watson's ToneAnalyzerV3 then it will appear as a black diamond in the plot and legend.
+        If your article was able to be scored by IBM Watson's ToneAnalyzerV3 then it will appear as a black diamond in the plot and legend. If not, it will not appeas and the analytical score will be -1 in the table below.
       </p>
     </div>
 
@@ -83,9 +100,14 @@
         <td>{{ obj_mean }}</td>
       </tr>
       <tr>
-        <td>Overall</td>
+        <td>Sentiment</td>
         <td>{{ score }}</td>
         <td>{{ score_mean }}</td>
+      </tr>
+      <tr>
+        <td>Analytical</td>
+        <td>{{ analytical }}</td>
+        <td>{{ analytical_mean }}</td>
       </tr>
       </table>
     </center>
@@ -95,15 +117,6 @@
         {{ script | safe }}
     </div>
     <hr>
-
-    <h2>Your article was talking about Topic #{{ topic | safe }} with a probability of {{ topic_prob | safe }}%.</h2>
-    <hr>
-
-    <form action = "/graphs_input" method="POST" >
-        <ul >
-            <button name="topic" type="submit" value={{ topic | safe }}>Click this button to view an see more information about your articles topic.</button>
-        </ul>
-    </form>
 
     <div class="container">
 

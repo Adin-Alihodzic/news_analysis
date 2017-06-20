@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>FraudDetector</title>
+    <title>News Analysis</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
@@ -65,10 +65,7 @@
           Below are several plots and images, such as an interactive plot and a word cloud, to help you with that as well as show you how news sites and articles discuss this topic.
         </p>
 
-        <a name="plot"></a>
-        <hr>
-        <hr>
-        <hr>
+        <span class="anchor" id="plot"></span>
         <h2 align="center"><strong>Interactive Plot</strong></h2>
         <p>
           The following plot was created in Bokeh.
@@ -96,12 +93,10 @@
             {{ div | safe }}
             {{ script | safe }}
         </div>
+        <hr>
 
 
-        <a name="coverage"></a>
-        <hr>
-        <hr>
-        <hr>
+        <span class="anchor" id="coverage"></span>
         <h2><strong>Coverage</strong>: This Topic was talked about the most on <font size="10" blue>{{ max_date }}</font></h2>
         <p>
 
@@ -110,14 +105,12 @@
           The plot below charts the coverage of this topic by all news sources that had any articles about it.
         </p>
         <img {{ date_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
 
-        <a name="mood"></a>
-        <hr>
-        <hr>
-        <hr>
+        <span class="anchor" id="mood"></span>
         <h2><strong>Mood</strong>: This Topic's Mood is <font size="10" {{ color }}>{{ tone }}</font></h2>
         <p>
-          The average mood per article for this topic was {{ tone }}, with a probability of {{ tone_mean }}.
+          The average mood per article for this topic was {{ tone }}, with a probability of {{ tone_mean }}%.
           This mood was found from the IBM Watson Tone Analyzer. As well as determining the analytical score used above, it also determines emotional tones.
           These emotional tones are Anger, Fear, Disgust, Sadness and Joy (and their corresponding colors in the graph: Red, Purple, Green, Blue and Yellow).
           These tones are based on the theory of research pscholinguistics, a field of research that explores the relationship between linguistic behavior and psychological theories.
@@ -126,12 +119,10 @@
           The plot below is a stacked bar chart of all mood scores per article for this topic. The scores were sorted for a better representation.
         </p>
         <img {{ mood_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
 
 
-        <a name="pos_neg"></a>
-        <hr>
-        <hr>
-        <hr>
+        <span class="anchor" id="pos_neg"></span>
         <h2><strong>Positive/Negative Scores</strong></h2>
         <p>
           Below is a bar chart of the positive score (blue) for each article going up and the negative score (red) going down.
@@ -139,11 +130,9 @@
           The sentiment words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
         </p>
         <img {{ pos_neg_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
 
-        <a name="word_cloud"></a>
-        <hr>
-        <hr>
-        <hr>
+        <span class="anchor" id="word_cloud"></span>
         <h2><strong>Word Cloud</strong></h2>
         <p>
           Below is a Word Cloud of the topic words for this topic.
@@ -151,6 +140,7 @@
         </p>
         <img {{ word_cloud | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
         <hr>
+
       </div>
       <div class="col-sm-2 sidenav">
         <div class="well">
@@ -170,6 +160,14 @@
     </div>
   </div>
 
+  <style>
+  .anchor{
+    display: block;
+    height: 50px; /*same height as header*/
+    margin-top: -50px; /*same height as header*/
+    visibility: hidden;
+  }
+  </style>
 
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -199,7 +197,7 @@
     </nav>
 
     <footer class="container-fluid text-center">
-      <p>Footer Text</p>
+      <p></p>
     </footer>
 
     <!-- Bootstrap core JavaScript

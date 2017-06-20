@@ -125,43 +125,43 @@ class NewsAnalysis:
 
     def make_plots(self, df):
         '''Makes all plots used in web app'''
-        # # Length Histograms
-        # topic_length_hist, quote_length_hist = all_length_hist(df)
-        # topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist_'+identifier+'.png')
-        # quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist_'+identifier+'.png')
-        #
+        # Length Histograms
+        topic_length_hist, quote_length_hist = all_length_hist(df)
+        topic_length_hist.savefig('web_app/static/img/topic_sent_length_hist_'+identifier+'.png')
+        quote_length_hist.savefig('web_app/static/img/quote_tweet_length_hist_'+identifier+'.png')
+
         # Mood Bar Graphs
-        # mood_figs = mood_plots(self.topic_dict)
-        # for i,mood_fig in enumerate(mood_figs):
-        #     mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'_'+identifier+'.png')
+        mood_figs = mood_plots(self.topic_dict)
+        for i,mood_fig in enumerate(mood_figs):
+            mood_fig.savefig('web_app/static/img/mood_plots/mood_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
         mood_by_site_figs = mood_plots_by_site(self.topic_dict)
         for i,mood_by_site_fig in enumerate(mood_by_site_figs):
             mood_by_site_fig.savefig('web_app/static/img/mood_plots/mood_by_site_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # # Positive/Negative Bar Charts
-        # pos_neg_figs = pos_neg_plot(self.topic_dict)
-        # for i,pos_neg_fig in enumerate(pos_neg_figs):
-        #     pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'_'+identifier+'.png')
+        # Positive/Negative Bar Charts
+        pos_neg_figs = pos_neg_plot(self.topic_dict)
+        for i,pos_neg_fig in enumerate(pos_neg_figs):
+            pos_neg_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # pos_neg_by_site_figs = pos_neg_by_site_plot(self.topic_dict)
-        # for i,pos_neg_by_site_fig in enumerate(pos_neg_by_site_figs):
-        #     pos_neg_by_site_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic'+str(i)+'_'+identifier+'.png')
+        pos_neg_by_site_figs = pos_neg_by_site_plot(self.topic_dict)
+        for i,pos_neg_by_site_fig in enumerate(pos_neg_by_site_figs):
+            pos_neg_by_site_fig.savefig('web_app/static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # coverage_figs = coverage_by_site_by_topic(df,self.topic_dict)
-        # for i,coverage_fig in enumerate(coverage_figs):
-        #     coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'_'+identifier+'.png')
-        #
-        # # Bokeh plots
-        # components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
-        # for topic in range(self.lda_model.num_topics):
-        #     components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
-        # pickle.dump(components_dict, open('web_app/static/img/bokeh_plots/components_dict_'+identifier+'.pkl', 'wb'))
+        coverage_figs = coverage_by_site_by_topic(df,self.topic_dict)
+        for i,coverage_fig in enumerate(coverage_figs):
+            coverage_fig.savefig('web_app/static/img/coverage_plots/coverage_plot_by_topic'+str(i)+'_'+identifier+'.png')
 
-        # # Word Clouds
-        # cloud_figs = make_clouds(df, self.lda_model)
-        # for i,cloud_fig in enumerate(cloud_figs):
-        #     cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'_'+identifier+'.png')
+        # Bokeh plots
+        components_dict = [{'script': None, 'div': None} for topic in range(self.lda_model.num_topics)]
+        for topic in range(self.lda_model.num_topics):
+            components_dict[topic]['script'], components_dict[topic]['div'] = make_bokeh_plot(self.topic_dict, topic)
+        pickle.dump(components_dict, open('web_app/static/img/bokeh_plots/components_dict_'+identifier+'.pkl', 'wb'))
+
+        # Word Clouds
+        cloud_figs = make_clouds(df, self.lda_model)
+        for i,cloud_fig in enumerate(cloud_figs):
+            cloud_fig.savefig('web_app/static/img/wordclouds/wordcloud_topic'+str(i)+'_'+identifier+'.png')
 
     def run_lda_model(self,df, no_below=20, no_above=0.5, topn=10000, num_topics=None, weight_threshold=0.25, K=15, T=150, passes=20, iterations=400):
         """
