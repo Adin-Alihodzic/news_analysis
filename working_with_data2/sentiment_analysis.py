@@ -15,8 +15,8 @@ import os
 
 from watson_developer_cloud import ToneAnalyzerV3
 
-dotenv_path = join(dirname('__file__'), '.env')
-load_dotenv(dotenv_path)
+# dotenv_path = join(dirname('__file__'), '.env')
+# load_dotenv(dotenv_path)
 
 tone_analyzer = ToneAnalyzerV3(
    username=os.environ.get("TONE_USERNAME"),
