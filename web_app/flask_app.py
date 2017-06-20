@@ -242,7 +242,6 @@ def predict():
             for topic_and_prob in article_topics:
                 temp_topic = topic_and_prob[0]
                 temp_prob = topic_and_prob[1]
-                print(temp_topic, temp_prob)
                 if temp_prob > prob:
                     topic = temp_topic
                     prob = temp_prob
@@ -331,7 +330,7 @@ def predict():
                                     css_resources=css_resources,
                                     script=script,
                                     div=div,
-                                    mood_plot='src="/home/mcian91/news_analysis/web_app/predicted_images/'+str(name)+'.png"',)
+                                    mood_plot='src="/home/mcian91/news_analysis/web_app/predicted_images/'+str(name)+'.png"')
         else:
 
             return render_template('prediction_failed.html')

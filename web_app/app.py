@@ -336,7 +336,7 @@ def predict():
                                     css_resources=css_resources,
                                     script=script,
                                     div=div,
-                                    mood_plot='src="static/img/mood_plots/predicted_article_'+str(name)+'.png"',)
+                                    mood_plot='src="static/img/mood_plots/predicted_article_'+str(name)+'.png"')
         else:
 
             return render_template('prediction_failed.html')
