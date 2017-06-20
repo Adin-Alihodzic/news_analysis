@@ -231,6 +231,7 @@ def predict():
                 topic_dict = pickle.load(f)
 
             try:
+                import pdb; pdb.set_trace()
                 json_response_sentiment = tone_analyzer.tone(text=' '.join(sentiment_texts[0]), sentences=False)
                 tones = parse_toneanalyzer_response(json_response_sentiment)
                 analytical_score = tones[1]['Analytical']
