@@ -231,7 +231,7 @@ def predict():
                 analytical_score = tones[1]['Analytical']
 
                 script, div = make_bokeh_plot(topic_dict, topic, new_article=[score, analytical_score])
-            except Exception,e:
+            except Exception as e:
                 print(e)
                 script, div = get_components(topic=topic)
 
