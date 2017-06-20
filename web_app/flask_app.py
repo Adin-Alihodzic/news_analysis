@@ -364,4 +364,4 @@ def contact():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8106, debug=True)flask_app
+    app.run(host='0.0.0.0', port=8106, debug=True)
