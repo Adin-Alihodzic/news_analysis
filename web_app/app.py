@@ -269,7 +269,7 @@ def predict():
                                     obj_mean="{0:.3f}".format(obj_mean),
                                     score_mean="{0:.3f}".format(score_mean),
                                     topic=topic,
-                                    topic_prob="{0:.3f}".format(prob*10),
+                                    topic_prob="{0:.3f}".format(prob*100),
                                     js_resources=js_resources,
                                     css_resources=css_resources,
                                     script=script,
