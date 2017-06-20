@@ -201,8 +201,8 @@ def coverage_by_site_by_topic(df_all, topic_dict):
     colors = {'538': '#ff0000', 'abc': '#00ff00', 'cbs': '#0000ff', 'cnn': '#006400', 'esquire': '#000000', 'fox': '#6419c8', 'huffpo': '#ffff00', 'nyt': '#00ffff', 'reuters': '#ff00ff', 'rollingstone': '#808080', 'wapo': '#000080', 'washtimes': '#f0e68c'}
     df_count = df_all.groupby('source')['date_published'].count()
     figs = []
-    # for topic in range(len(topic_dict)):
-    for topic in [30]:
+    for topic in range(len(topic_dict)):
+    # for topic in range(1):
         dates = topic_dict[topic]['date_published']
         sources = topic_dict[topic]['source']
         topic_probs = topic_dict[topic]['topic_prob']
@@ -211,20 +211,19 @@ def coverage_by_site_by_topic(df_all, topic_dict):
         y_max = (df['date_published'].dt.date.value_counts()/df_count.values.max()).max()
         idx_dates = pd.date_range(df['date_published'].dt.date.min().isoformat(), df['date_published'].dt.date.max().isoformat())
 
-        fig = plt.figure(figsize=(5,20), dpi=300)
+        fig = plt.figure(figsize=(24,20), dpi=300)
         ax_all = fig.add_subplot(111)
         # ax_all.set_xlabel('date')
-        ax_all.set_ylabel('Coverage').set_fontsize(10)
-        ax_all.set_title('Coverage of Topic '+str(topic)+' by Site').set_fontsize(10)
+        ax_all.set_ylabel('Coverage').set_fontsize(30)
+        ax_all.set_title('Coverage of Topic '+str(topic)+' by Site').set_fontsize(30)
         for k,v in ax_all.spines.items():
             v.set_visible(False)
         ax_all.set_xticks([])
         ax_all.set_yticks([])
         axes = []
         y_lim = []
-        # for i,source in enumerate(np.unique(df['source'])):
-        for i,source in enumerate(["538", "abc", "cbs", "cnn", "fox"]):
-            ax = fig.add_subplot(5,1,i+1)
+        for i,source in enumerate(np.unique(df['source'])):
+            ax = fig.add_subplot(12,1,i+1)
             new_df = df[df['source'] == source]
             new_df = new_df.reset_index(drop=True)
 
@@ -236,8 +235,8 @@ def coverage_by_site_by_topic(df_all, topic_dict):
             date_counts_df = date_counts_df*mean_topic_prob/df_count[source]
             x = date_counts_df.index
             y = date_counts_df.values
-            ax.plot(x, y, label=source, color=colors[source], linewidth=1.0)
-            ax.legend(loc='upper left', prop={'size':7})
+            ax.plot(x, y, label=source, color=colors[source], linewidth=3.0)
+            ax.legend(loc='upper left', prop={'size':25})
             for k,v in ax.spines.items():
                 v.set_visible(False)
             ax.set_xticks([])
@@ -252,7 +251,7 @@ def coverage_by_site_by_topic(df_all, topic_dict):
         axes[-1].xaxis.set_major_formatter(xfmt)
 #         fig.autofmt_xdate()
         labels = ax.get_xticklabels()
-        plt.setp(labels, rotation=45, fontsize=5)
+        plt.setp(labels, rotation=45, fontsize=15)
 
         figs.append(fig)
     return figs
@@ -454,11 +453,8 @@ def pos_neg_by_site_plot(topic_dict):
 
         fig = plt.figure(figsize=(16,12), dpi=300)
 
-        try:
-            p1 = plt.bar(ind, pos_scores, width, color='b')
-            p2 = plt.bar(ind, neg_scores, width, color='r')
-        except:
-            import pdb; pdb.set_trace()
+        p1 = plt.bar(ind, pos_scores, width, color='b')
+        p2 = plt.bar(ind, neg_scores, width, color='r')
 
         plt.xlabel('Source')
         plt.xticks(ind, np.unique(topic_dict[topic]['source']), rotation=40)

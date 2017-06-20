@@ -106,7 +106,7 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
             pos_by_site[site] = np.array(topic_dict[topic]['pos'])[indices]
             neg_by_site[site] = np.array(topic_dict[topic]['neg'])[indices]
             obj_by_site[site] = np.array(topic_dict[topic]['obj'])[indices]
-            score_by_site[site] = (np.array(pos_by_site[site]) + np.array(pos_by_site[site])) * (1 - np.array(topic_dict[topic]['obj'])[indices])
+            score_by_site[site] = (np.array(pos_by_site[site]) + np.array(pos_by_site[site])) * (1 - np.array(topic_dict[topic]['obj'])[indices])/2
             analytical_by_site[site] = np.array(topic_dict[topic]['Analytical'])[indices]
             size_by_site[site] = [50*topic for topic in np.array(topic_dict[topic]['topic_prob'])[indices]]
             url_by_site[site] = np.array(topic_dict[topic]['url'])[indices]
@@ -436,7 +436,7 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
 
     return script, div
 
-def make_clouds(df, lda_model):
+def make_clouds(topic_texts, lda_model):
     """
     Function to get Word Clouds. Following are the steps we take:
 
