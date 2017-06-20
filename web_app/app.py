@@ -207,7 +207,7 @@ def predict():
 
             topic_texts, sentiment_texts, quote_texts, tweet_texts = process_articles(df)
 
-            with open('../pickles/lda_model.pkl', 'rb') as f:
+            with open('../pickles/lda_model_'+identifier+'.pkl', 'rb') as f:
                 lda_model = pickle.load(f)
 
             pos, neg, obj = get_article_sentiment(lda_model, sentiment_texts)

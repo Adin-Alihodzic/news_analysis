@@ -27,8 +27,10 @@ import os
 
 from watson_developer_cloud import ToneAnalyzerV3
 
-
-
+tone_analyzer = ToneAnalyzerV3(
+   username=os.environ.get("TONE_USERNAME"),
+   password=os.environ.get("TONE_PASSWORD"),
+   version='2016-05-19')
 
 
 from flask import Flask, render_template, request
