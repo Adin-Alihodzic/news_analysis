@@ -1,13 +1,13 @@
 body {
-  padding-top: 50px;
+  padding-top: 10%;
 }
 .starter-template {
-  padding: 40px 15px;
+  padding: 8% 12%;
   text-align: center;
 }
 ol {
   columns: 2;
   -webkit-columns: 2;
   -moz-columns: 2;
-  margin-left:25px;
+  margin-left:10%;
 }
