@@ -189,7 +189,7 @@ def make_mood_plot(tones, name):
     plt.title('Emotional tones and their scores')
     plt.xticks(index, X_axis_legends_tuple)
     plt.rcParams.update({'font.size': 30})
-    fig.savefig('/home/mcian91/news_analysis/web_app/predicted_images/'+name+'.png')
+    fig.savefig('/home/mcian91/news_analysis/web_app/static/predicted_images/'+name+'.png')
 
 # home page
 @app.route('/')
@@ -330,7 +330,7 @@ def predict():
                                     css_resources=css_resources,
                                     script=script,
                                     div=div,
-                                    mood_plot='src="../predicted_images/'+str(name)+'.png"')
+                                    mood_plot='src="../static/predicted_images/'+str(name)+'.png"')
         else:
 
             return render_template('prediction_failed.html')
