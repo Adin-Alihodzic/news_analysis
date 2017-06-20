@@ -54,15 +54,17 @@ def make_bokeh_plot(topic_dict, topic, new_article=None):
 
     p1 = figure(plot_width=1200, plot_height=800,
                 tools=["tap, pan, wheel_zoom",hover1], title=title,
-              toolbar_location="above", title_text_font_size='20pt')
+              toolbar_location="above")
     p1.xaxis.axis_label_text_font_size = "20pt"
     p1.yaxis.axis_label_text_font_size = "20pt"
+    p1.title.text_font_size("20pt")
 
     p2 = figure(plot_width=1200, plot_height=800,
                 tools=["tap, pan, wheel_zoom",hover2], title=title,
-              toolbar_location="above", title_text_font_size='20pt')
+              toolbar_location="above")
     p2.xaxis.axis_label_text_font_size = "20pt"
     p2.yaxis.axis_label_text_font_size = "20pt"
+    p2.title.text_font_size("20pt")
     # p.toolbar.active_drag = 'auto'
 
     a = 0.6
