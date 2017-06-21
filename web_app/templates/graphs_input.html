@@ -3,7 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="target-densitydpi=device-dpi" />
+    <meta name="HandheldFriendly" content="true"/>
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
@@ -42,7 +44,7 @@
   <body>
 
   <!-- Sidebar -->
-  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:8%">
+  <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15vw">
     <h3 class="w3-bar-item">Jump To:</h3>
     <a href="#plot" class="w3-bar-item w3-button">Plot</a>
     <a href="#coverage" class="w3-bar-item w3-button">Coverage</a>
@@ -51,13 +53,7 @@
     <a href="#word_cloud" class="w3-bar-item w3-button">Word Cloud</a>
   </div>
 
-  <div class="container-fluid text-left">
-    <div class="row content">
-      <div class="col-sm-2 sidenav">
-
-      </div>
-
-      <div class="col-sm-8 text-left">
+  <div class="container-fluid text-left" style="margin-left:15vw; margin-right:15vw">
         <h1 align="center"><strong>Topic {{ topic_num }}</strong></h1>
         <p>
           This page is dedicated to Topic {{ topic_num }}. I have decided not to label these topics in an attempt to be as subjective as possible.
@@ -162,8 +158,6 @@
               </ul>
           </form>
         </div>
-      </div>
-    </div>
   </div>
 
   <style>
