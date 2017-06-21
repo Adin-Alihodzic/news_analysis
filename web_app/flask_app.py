@@ -359,7 +359,7 @@ def graphs_input():
         topic = request.form['topic']
         sentence = request.form['sentence']
 
-        if sentence != None:
+        if sentence != '':
             sentence = str(sentence)
             with open('/home/mcian91/news_analysis/pickles/lda_model_'+identifier+'.pkl', 'rb') as f:
                 lda_model = pickle.load(f)

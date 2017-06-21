@@ -377,7 +377,6 @@ def graphs_input():
         topic = request.form['topic']
         sentence = request.form['sentence']
 
-        # import pdb; pdb.set_trace()
         if sentence != '':
             sentence = str(sentence)
             with open('../pickles/lda_model_'+identifier+'.pkl', 'rb') as f:
