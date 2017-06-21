@@ -10,3 +10,7 @@ ol {
   -webkit-columns: 2;
   -moz-columns: 2;
 }
+li {
+  display: list-item;
+  list-style-position: inside;
+}
