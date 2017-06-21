@@ -344,7 +344,7 @@ def predict():
 # graphs page
 @app.route('/graphs')
 def graphs():
-    with open('../pickles/lda_model.pkl', 'rb') as f:
+    with open('../pickles/lda_model_'+identifier+'.pkl', 'rb') as f:
         lda_model = pickle.load(f)
     vis_plot = codecs.open("static/img/pyLDAvis_graphs/pyLDAvis_"+identifier+".html", 'r')
     pyLDAvis_html = vis_plot.read()
@@ -358,14 +358,46 @@ def graphs():
                             pyLDAvis_html=pyLDAvis_html)
     return encode_utf8(html)
 
+@app.route('/predict_graphs', methods=['POST','GET'])
+def predict_graphs():
+    if request.method == 'POST':
+        sentence = str(request.form['sentence'])
+
+        with open('../pickles/lda_modell_'+identifier+'.pkl', 'rb') as f:
+            lda_model = pickle.load(f)
+
+        article_bow = lda_model.id2word.doc2bow(topic_texts[0])
+        article_topics = lda_model[article_bow]
+
+
 # graphs page
 @app.route('/graphs_input', methods=['POST','GET'])
 def graphs_input():
     if request.method == 'POST':
-        topic = int(request.form['topic'])
-        # return render_template('graphs.html', plot='bokeh_plots/topic'+str(selectedValue)+'.html')
+        topic = request.form['topic']
+        sentence = request.form['sentence']
+
+        if sentence != None:
+            sentence = str(sentence)
+            with open('../pickles/lda_model_'+identifier+'.pkl', 'rb') as f:
+                lda_model = pickle.load(f)
+
+            bow = lda_model.id2word.doc2bow(sentence.split(' '))
+            topics = lda_model[bow]
+
+            topic = 0
+            prob = 0
+            for topic_and_prob in topics:
+                temp_topic = topic_and_prob[0]
+                temp_prob = topic_and_prob[1]
+                if temp_prob > prob:
+                    topic = temp_topic
+                    prob = temp_prob
+            topic += 1
+        else:
+            topic = int(topic)
+
         script, div = get_components(topic=topic)
-    # return render_template('graphs.html', plot='./bokeh_plots/topic0.html')
 
         with open('../pickles/topic_dict_'+identifier+'.pkl', 'rb') as f:
             topic_dict = pickle.load(f)

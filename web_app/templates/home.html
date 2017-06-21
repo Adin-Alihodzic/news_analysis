@@ -99,13 +99,19 @@
         The right side shows you the top 20 words associated with the topic you have selected. To learn more about this please go to the "Topic Selector" page.
         Below the graph is a table of my personal labels for the topics I felt I could reasonably discern.
         These are simply recommendations for what I believe the topic is discussing and I encourage you to decide that for yourself.
+        Once you have found a topic your interested in enter its number in the box provided below the graph (not the box at the top left of the graph).
+        You may also input a series of words below that and you will be redirected to the most likely topic (please not this is probablistic so check you have the right topic once you find its number).
       </p>
 
       {{ pyLDAvis_html | safe }}
 
       <form action = "/graphs_input" method="POST" >
           <ul >
-              <strong>Learn more about a topic by entering its' number here: </strong><input name="topic" type ="number" />
+              <strong>Learn more about a topic by entering its' number here: </strong> &emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<input name="topic" type ="number" />
+              <input type ="submit" value="submit" /> </li>
+          </ul>
+          <ul >
+              <strong>Or input a series of words and you will be directed to the most likely topic: </strong>&nbsp;&nbsp;<input name="sentence" type ="string" />
               <input type ="submit" value="submit" /> </li>
           </ul>
       </form>
@@ -203,7 +209,7 @@
       <p>
         Below is a bar chart of the positive score (blue) for each article going up and the negative score (red) going down.
         These scores were found by summing the positive together and summing the negative scores together for each sentiment word in an article for this topic.
-        The sentiment words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
+        The sentiment words were determined while preprocessing the data and that process is discussed further at <a href="https://github.com/iamianM/news_analysis">www.github.com/iamianM/news_analysis</a>.
       </p>
 
       <img src="../static/img/pos_neg_plots/pos_neg_by_site_plot_by_topic30_2017-06-18_55_topics_400_passes.png" class="img-responsive" alt="Cinque Terre" width="1200" height="800">
