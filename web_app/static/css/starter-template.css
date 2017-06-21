@@ -1,9 +1,11 @@
 body {
   padding-top: 50px;
+  font-size:6.13vw;
 }
 .starter-template {
   padding: 40px 15px;
   text-align: center;
+  font-size:6.13vw;
 }
 ol {
   columns: 2;
@@ -14,3 +16,10 @@ li {
   display: list-item;
   list-style-position: inside;
 }
+
+html { font-size:6.13vw; }
+body { font-size:6.13vw;}
+h1 { font-size:6.13vw; }
+h2 { font-size:6.13vw; }
+h3 { font-size:6.13vw; }
+h4 { font-size:6.13vw; }
