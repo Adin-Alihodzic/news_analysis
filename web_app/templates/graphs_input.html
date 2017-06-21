@@ -46,20 +46,30 @@
   <!-- Sidebar -->
   <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15vw">
     <h3 class="w3-bar-item">Jump To:</h3>
+    <a href="#word_cloud" class="w3-bar-item w3-button">Word Cloud</a>
     <a href="#plot" class="w3-bar-item w3-button">Plot</a>
     <a href="#coverage" class="w3-bar-item w3-button">Coverage</a>
     <a href="#mood" class="w3-bar-item w3-button">Mood</a>
     <a href="#pos_neg" class="w3-bar-item w3-button">Sentiment</a>
-    <a href="#word_cloud" class="w3-bar-item w3-button">Word Cloud</a>
   </div>
 
   <div class="container-fluid text-left" style="margin-left:15vw; margin-right:15vw">
         <h1 align="center"><strong>Topic {{ topic_num }}</strong></h1>
         <p>
           This page is dedicated to Topic {{ topic_num }}. I have decided not to label these topics in an attempt to be as subjective as possible.
-          I leave it up to you to decide what this topic is about. If you want to see the most common words related to this topic please look at the word cloud.
-          Below are several plots and images, such as an interactive plot and a word cloud, to help you with that as well as show you how news sites and articles discuss this topic.
+          I leave it up to you to decide what this topic is about.
+          Below are several plots and images, such as a word cloud and interactive plot, to help you with that as well as show you how news sites and articles discuss this topic.
         </p>
+        <hr>
+
+        <span class="anchor" id="word_cloud"></span>
+        <h2><strong>Word Cloud</strong></h2>
+        <p>
+          Below is a Word Cloud of the topic words for this topic.
+          The topic words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
+        </p>
+        <img {{ word_cloud | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
+        <hr>
 
         <span class="anchor" id="plot"></span>
         <h2 align="center"><strong>Interactive Plot</strong></h2>
@@ -132,15 +142,6 @@
           The sentiment words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
         </p>
         <img {{ pos_neg_plot | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
-        <hr>
-
-        <span class="anchor" id="word_cloud"></span>
-        <h2><strong>Word Cloud</strong></h2>
-        <p>
-          Below is a Word Cloud of the topic words for this topic.
-          The topic words were determined while preprocessing the data and that process is discussed further at my <a href="https://github.com/iamianM/news_analysis">github</a>.
-        </p>
-        <img {{ word_cloud | safe }} class="img-responsive" alt="Cinque Terre" width="1200" height="800">
         <hr>
   </div>
 
