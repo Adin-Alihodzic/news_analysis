@@ -1,4 +1,10 @@
 # Analyzing On-line News Journalism
+
+# Table of Contents
+1. [Motivations](#Motivations)
+2. [Data](#Data)
+3. [Scraping Articles](#Scraping Articles)
+
 ## Motivations
 The aim of this project was to provide users with tools to examine political news and the outlets that write it.
 In a political climate growing ever more divided I think it is important for people to have the tools to compare news articles and organizations. I have developed tools that allow a user to compare news sites by their mood, sentiment, and objectivity toward certain topics.
@@ -9,7 +15,7 @@ The hope is that a user can view all sides of an issue and come to a conclusion 
 I extract the topics of a weeks worth of news articles and determine their bias score using the formula: `(postive_sentiment + negative_sentiment)*(1-objective_score)`, where the positive, negative and objective values are determined by the sentiment library and the word probability is the probability that word pertains to that topic and is determined by LDA.
 
 ## Data
-### Scraping
+### Scraping Articles
 My data consists of articles gather from the Rich Site Summaries (RSS) feeds of 12 different sites. Those sites with their associated RSS links are [CNN][1], [ABC][2], [FOX][3], [NYT][4], [Reuters][5], [Washington Post][6], [Huffington Post][7], [Esquire][8], [Rolling Stone][9], [CBS][10], [FiveThirtyEight][11], [The Washington Times][12]. Every hour the articles linked from each RSS feed are scraped and saved to a Mongo database on an Amazon Web Services (AWS) server. The data is then converted to a CSV file and stored on an S3 bucket.
 
 All past articles from the Wall Street Journal (WSJ) were available, so they were scraped as well. This may be used in future projects.
