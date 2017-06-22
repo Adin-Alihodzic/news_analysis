@@ -33,6 +33,18 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <link
+        href="http://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.css"
+        rel="stylesheet" type="text/css">
+    <link
+        href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.css"
+        rel="stylesheet" type="text/css">
+
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-0.12.4.min.js"></script>
+    <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-0.12.4.min.js"></script>
+
+    {{ script | safe }}
+
     {{ js_resources|indent(4)|safe }}
 
     {{ css_resources|indent(4)|safe }}
@@ -125,7 +137,7 @@
       <h2>Topic Visualization</h2>
       <p>
         Below is the same graph you will see when you click the "Topic Selector" tab above.
-        The left side of the graph is a visualization of the topics that have been determines using Latent Dirichlet Allocation (LDA).
+        The left side of the graph is a visualization of the topics that have been determined using Latent Dirichlet Allocation (LDA).
         The right side shows you the top 20 words associated with the topic you have selected. To learn more about this please go to the "Topic Selector" page.
         Below the graph is a table of my personal labels for the topics I felt I could reasonably discern.
         These are simply recommendations for what I believe the topic is discussing and I encourage you to decide that for yourself.
@@ -137,7 +149,7 @@
 
       <form action = "/graphs_input" method="POST" >
           <ul >
-              <strong>Learn more about a topic by entering its' number here: </strong> &emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<input name="topic" type ="number" />
+              <strong>Learn more about a topic by entering its number here: </strong> &emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<input name="topic" type ="number" />
               <input type ="submit" value="submit" /> </li>
           </ul>
           <ul >
@@ -203,7 +215,7 @@
       Gianforte was cited for misdemeanor assault by the Gallatin County Sheriff and has been ordered to appear in court regarding his actions. Three of Montana's largest newspapers, including the Billings Gazette, the largest in the state, the Missoulian and the Independent Record, all rescinded their endorsements of Gianforte in the wake of the incident. Speaker Paul Ryan and other members of Congress urged Gianforte to apologize for his assault.
       </p>
       <p>
-      Gianforte won the special election on May 25. During Gianforte's acceptance speech that evening, he apologized to Jacobs and the Fox News crew for his assault. On June 7 Gianforte made a written apology to Jacobs and donated $50,000 to the Committee to Protect Journalists, in return, Jacobs agreed to not pursue a civil claim against Gianforte.
+      Gianforte won the special election on May 25. During Gianforte's acceptance speech that evening, he apologized to Jacobs and the Fox News crew for his assault. On June 7 Gianforte made a written apology to Jacobs and donated $50,000 to the Committee to Protect Journalists, and in return, Jacobs agreed to not pursue a civil claim against Gianforte.
       </p>
       <p>
       On June 12, 2017, Gianforte pleaded guilty and was originally sentenced to four days in jail, to be completed in part through a work program. But because Gianforte was guilty of an assault charge, he was ineligible for the work program. The judge then switched the sentence to 40 hours of community service, 20 hours of anger management, 180-day deferred sentence, and a $300 fine along with an $85 court fee.
@@ -213,7 +225,7 @@
       <h3>Coverage</h3>
       <p>
         First, I will go over the coverage of this topic by news source.
-        As stated in the summary, Gianforte assulted the reporter on May 24th and plead guilty to the assult on June 12.
+        As stated in the summary, Gianforte assulted the reporter on May 24th and pleaded guilty to the assult on June 12.
         Below is a plot of the coverage of this topic by news site. As you can see there is a rise in coverage starting on May 24th (the day the incident occured), peaking on May 25th (the day of the House special election), and a second peak on June 12th (the day of Gianforte's sentencing).
         Some sites had more coverage than others, such as Fox having the most, which may be due to a Fox reporter witnessing the incident.
       </p>
@@ -226,7 +238,7 @@
         The average mood per article for this topic was disgust, with a probability of 47.7%.
         This mood was found from the IBM Watson Tone Analyzer. As well as determining the analytical score used above, it also determines emotional tones.
         These emotional tones are Anger, Fear, Disgust, Sadness and Joy (and their corresponding colors in the graph: Red, Purple, Green, Blue and Yellow).
-        These tones are based on the theory of research pscholinguistics, a field of research that explores the relationship between linguistic behavior and psychological theories.
+        These tones are based on the theory of research psycholinguistics, a field of research that explores the relationship between linguistic behavior and psychological theories.
       </p>
       <p>
         The plot below is a stacked bar chart of all mood scores per article for this topic. The scores were sorted for a better representation.
@@ -249,12 +261,12 @@
       <p>
         The plot below is interactive. At the top left, you can switch between the "By Article" and "By Site" tabs. At the top left is the toolbar.
         Toggle these buttons on and off by clicking them. The buttons from left to right are: Pan, Wheel Zoom, Tap, and Hover. All are automatically set on except Wheel Zoom.
-        Pan allows you to move the graph around by clicking and moving you mouse. Wheel Zoom allows you to zoom in and out using the wheel on your mouse.
-        Tap allows you to open the articles url by clicking on it. Lastly, Hover shows you atributes about each article when you hover over it.
+        Pan allows you to move the graph around by clicking and moving your mouse. Wheel Zoom allows you to zoom in and out using the wheel on your mouse.
+        Tap allows you to open the article's url by clicking on it. Lastly, Hover shows you attributes about each article when you hover over it.
         To the right of the graph you will see a Slider and a Checkbox Group. The slider allows you to change the probability threshold each article must have in relation to this topic.
         Each article has a certain probability of being in each topic you saw on the Topic Choice page. The probability of each article being in this topic is visualized by the size of each articles bubble.
-        You will see as you move the Topic Probability slider closer to 1, the smaller bubbles will disappear. The checkbox allows you to select which site's articles you would like to view.
-        As you unselect site's their article bubble's will disappear. Clicking the site's checkbox again will make the site's bubbles reappear. The two tabs have the same interactivity except that the "By Site" tab does not have a slider and checkbox group.
+        You will see as you move the Topic Probability slider closer to 1, the smaller bubbles will disappear. The checkbox allows you to select which site's article's you would like to view.
+        As you unselect sites their bubble will disappear. Clicking the site's checkbox again will make the site's bubbles reappear. The two tabs have the same interactivity except that the "By Site" tab does not have a slider and checkbox group.
       </p>
       <p>
         What I have noticed from the below graph is there tends to be a linear trend between the analytical and sentiment scores.
@@ -263,10 +275,7 @@
         Therefore, if you would like to view an article that states more facts over opinion, I suggest you click an article in the top left corner, whereas if you want a more opinionated article go to the bottom right hand corner.
       </p>
 
-      <div style="width: 85%; display: inline-block;">
-          {{ div | safe }}
-          {{ script | safe }}
-      </div>
+      {{ div | safe }}
 
       <span class="anchor" id="predict"></span>
       <h2>Predict</h2>
