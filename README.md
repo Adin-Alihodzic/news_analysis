@@ -1,6 +1,6 @@
 # Analyzing On-line News Journalism
 
-# Table of Contents
+## Table of Contents
 1. [Motivations](#mot)
 2. [Data](#data)
     1. [Scraping Articles](#scrape)
