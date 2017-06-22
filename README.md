@@ -3,21 +3,21 @@
 # Table of Contents
 1. [Motivations](#mot)
 2. [Data](#data)
-  * [Scraping Articles](#scrape)
-  * [Pre-Processing](#process)
+  1. [Scraping Articles](#scrape)
+  2. [Pre-Processing](#process)
 3. [Methods](#meth)
-  * [LDA](#lda)
-  * [Sentiment Analysis](#sent)
-    * [SentiWordNet](#senti)
-    * [ToneAnalyzerV3](#tone)
+  1. [LDA](#lda)
+  2. [Sentiment Analysis](#sent)
+    1. [SentiWordNet](#senti)
+    2. [ToneAnalyzerV3](#tone)
 5. [Example](#top_30)
-  * [Summary](#top_30_sum)
-  * [Topic Visualization](#top_30_vis)
-  * [Word Cloud](#top_30_cloud)
-  * [Coverage](#top_30_cov)
-  * [Mood](#top_30_mood)
-  * [Sentiment](#top_30_sent)
-  * [Interactive Graph](#top_30_bokeh)
+  1. [Summary](#top_30_sum)
+  2. [Topic Visualization](#top_30_vis)
+  3. [Word Cloud](#top_30_cloud)
+  4. [Coverage](#top_30_cov)
+  5. [Mood](#top_30_mood)
+  6. [Sentiment](#top_30_sent)
+  7. [Interactive Graph](#top_30_bokeh)
 6. [Future Considerations](#fut)
 
 ## <a name="mot"></a> Motivations
@@ -60,7 +60,7 @@ To determine a topics coherence, I model was created using data collected from p
 That and a web of word similarities is used. More about that can be learned by reading their [paper][a] on it.
 I used this metric on LDA models created using topic number from 5 to 80 and the coherence value did not vary much between any of the models.
 
-### Sentiment
+### <a name="sent"></a> Sentiment
 #### <a name="senti"></a> SentiWordNet
 SentiWordNet is a lexical database that groups English words into sets of synonyms and provides sentiment scores to them. These scores are positive sentiment, negative sentiment and objectivity and are valued from 0 to 1. More about how SentiWordNet can be found by reading their [paper][b]. For all sentiment words found in my sentiment texts discussed in the pre-proccessing section, I found the sentiment scores of all synonyms for that word and took the mean. I then summed these word's scores together for each article to get positive, negative and objective scores for each article. I determined a "sentiment score" I could use to relate these articles and that formula is below.
 
