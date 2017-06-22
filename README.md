@@ -1,11 +1,26 @@
 # Analyzing On-line News Journalism
 
 # Table of Contents
-1. [Motivations](#Motivations)
-2. [Data](#Data)
-3. [Scraping Articles](#Scraping Articles)
+1. [Motivations](#mot)
+2. [Data](#data)
+  * [Scraping Articles](#scrape)
+  * [Pre-Processing](#process)
+3. [Methods](#meth)
+  * [LDA](#lda)
+  * [Sentiment Analysis](#sent)
+    * [SentiWordNet](#senti)
+    * [ToneAnalyzerV3](#tone)
+5. [Example](#top_30)
+  * [Summary](#top_30_sum)
+  * [Topic Visualization](#top_30_vis)
+  * [Word Cloud](#top_30_cloud)
+  * [Coverage](#top_30_cov)
+  * [Mood](#top_30_mood)
+  * [Sentiment](#top_30_sent)
+  * [Interactive Graph](#top_30_bokeh)
+6. [Future Considerations](#fut)
 
-## Motivations
+## <a name="mot"></a> Motivations
 The aim of this project was to provide users with tools to examine political news and the outlets that write it.
 In a political climate growing ever more divided I think it is important for people to have the tools to compare news articles and organizations. I have developed tools that allow a user to compare news sites by their mood, sentiment, and objectivity toward certain topics.
 A user can pick an analytical piece, opinionated piece, neither or both on a certain topic to read.
@@ -14,21 +29,21 @@ The hope is that a user can view all sides of an issue and come to a conclusion 
 
 I extract the topics of a weeks worth of news articles and determine their bias score using the formula: `(postive_sentiment + negative_sentiment)*(1-objective_score)`, where the positive, negative and objective values are determined by the sentiment library and the word probability is the probability that word pertains to that topic and is determined by LDA.
 
-## Data
-### Scraping Articles
+## <a name="data"></a> Data
+### <a name="scrape"></a> Scraping Articles
 My data consists of articles gather from the Rich Site Summaries (RSS) feeds of 12 different sites. Those sites with their associated RSS links are [CNN][1], [ABC][2], [FOX][3], [NYT][4], [Reuters][5], [Washington Post][6], [Huffington Post][7], [Esquire][8], [Rolling Stone][9], [CBS][10], [FiveThirtyEight][11], [The Washington Times][12]. Every hour the articles linked from each RSS feed are scraped and saved to a Mongo database on an Amazon Web Services (AWS) server. The data is then converted to a CSV file and stored on an S3 bucket.
 
 All past articles from the Wall Street Journal (WSJ) were available, so they were scraped as well. This may be used in future projects.
 
-### Pre-Processing
+### <a name="process"></a> Pre-Processing
 The first step in pre-processing was removing stop-words. These are words such as 'the', 'a', 'I', 'him', etc. Next, I created bi-grams, tri-grams and quad-grams. These are new words that are combinations of words that commonly appear next to each other. An example of a quad-gram in extracted from the articles is "fbi_director_james_comey". These help with topic model and for interpretation when viewing the words in a topic. Next, I lemmatized the words. This involves removing inflectional endings of words and returning it to its base word. An example of how this works is changing the word "working" to "work". This too helps with topic modeling and interpretation. Finally, I separated quotes and tweets from an article to get what I called "sentiment texts" to be used with sentiment analysis. The purpose of this was to only use words written by the authors themselves when applying sentiment analysis. Also, as a future project I will examine how different news sites use quotes and tweets. Note that quotes and tweets were still used when modeling the topics.
 
 Also, when performing topic modeling there are words that can appear in all topics that are not stop-words. Since I examined political articles there were several words that appeared often, such as 'Trump', 'president', 'election', 'politics', etc. These words can reduce interpretability of topics, so I decided to remove words that appeared in 50% or more of articles and words that appeared in less than 20. The later was to ensure mis-spelled words or obscure words were not included in topic modeling.
 
 
-## Methods
+## <a name="meth"></a> Methods
 
-### Latent Dirichlet Allocation
+### <a name="lda"></a> Latent Dirichlet Allocation
 Latent Dirichlet Allocation (LDA) is a probabilistic method used to discover latent topics within a series of documents and cluster them accordingly. LDA was used in this project to determine topics in political news sources. Each news article can be considered a mix of multiple topics and LDA assigns a set of topics to each with a probability of it pertaining to that topic. Each topic has a set of words with probabilities of being related to it. Articles with a high frequency of words that have high probabilities of being in a topic will themselves have a high probability of being in that topic. The assumption is that the articles cover a small set of topics and the topics use a small set of words frequently. A visualization can be found in the [topic example](#top_30)
 
 LDA requires you to input how many topics you want it to create before running the model. Since I am using all the articles I can get from my news source and the number of topics discussed can be any number, I had to determine how many topics to enter.
@@ -94,7 +109,7 @@ I used a Python interactive visualization library, [Bokeh][e], to create the gra
 
 ![alt text](poster/topic_30_bokeh.png)
 
-## Future Considerations
+## <a name="fut"></a> Future Considerations
 * How to determine how many features and topics to use in LDA
 * Determine whether the article is political
 * Use LDA in Spark to find topics of larger WSJ dataset
