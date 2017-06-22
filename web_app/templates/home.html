@@ -45,6 +45,7 @@
   <!-- Sidebar -->
   <div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15vw">
     <h3 class="w3-bar-item" style="font-size:3.13vw" >Menu</h3>
+    <a href="#tutorial" class="w3-bar-item w3-button" style="font-size:1.5vw" >Tutorial</a>
     <a href="#intro" class="w3-bar-item w3-button" style="font-size:1.5vw" >Introduction</a>
     <a href="#mot" class="w3-bar-item w3-button" style="font-size:1.5vw" >Motivations</a>
     <a href="#vis" class="w3-bar-item w3-button" style="font-size:1.5vw" >Visualization</a>
@@ -69,9 +70,38 @@
     <a href="#predict" class="w3-bar-item w3-button" style="font-size:1.5vw" >Predict</a>
   </div>
 
-
   <div class="container-fluid text-left" style="margin-left:15vw; margin-right:15vw">
       <h1 align="center"><strong>News Analysis</strong></h1>
+
+      <span class="anchor" id="tutorial"></span>
+      <h2>Tutorial</h2>
+      <p>
+        Below is a video of me navigating this site. Please watch to help you understand how this site works.
+      </p>
+      <!-- "Video For Everybody" v0.4.1 by Kroc Camen of Camen Design <camendesign.com/code/video_for_everybody>
+      =================================================================================================================== -->
+      <!-- first try HTML5 playback: if serving as XML, expand `controls` to `controls="controls"` and autoplay likewise       -->
+      <!-- warning: playback does not work on iPad/iPhone if you include the poster attribute! fixed in iOS4.0                 -->
+      <video width="640" height="360" controls preload="none">
+          <!-- MP4 must be first for iPad! -->
+          <source src="static/img/website_tutorial.mp4" type="video/mp4" /><!-- WebKit video    -->
+          <source src="static/img/website_tutorial.webm" type="video/webm" /><!-- Chrome / Newest versions of Firefox and Opera -->
+          <source src="static/img/website_tutorial.ogv" type="video/ogg" /><!-- Firefox / Opera -->
+          <!-- fallback to Flash: -->
+          <object width="640" height="384" type="application/x-shockwave-flash" data="__FLASH__.SWF">
+              <!-- Firefox uses the `data` attribute above, IE/Safari uses the param below -->
+              <param name="movie" value="__FLASH__.SWF" />
+              <param name="flashvars" value="image=__POSTER__.JPG&amp;file=static/img/website_tutorial.mp4" />
+              <!-- fallback image. note the title field below, put the title of the video there -->
+              <img src="static/img/tutorial_screenshot.png" width="640" height="360" alt="tutorital"
+                   title="No video playback capabilities, please download the video below" />
+          </object>
+      </video>
+      <!-- you *must* offer a download link as they may be able to play the file locally. customise this bit all you want -->
+      <p> <strong>Download Video:</strong>
+          Closed Format:  <a href="static/img/website_tutorial.mp4">"MP4"</a>
+          Open Format:    <a href="__VIDEO__.OGV">"OGG"</a>
+      </p>
 
       <span class="anchor" id="intro"></span>
       <h2>Introduction</h2>
@@ -247,7 +277,7 @@
       </p>
       <form action = "/predict" method="POST" >
         <ul >
-            Enter the url of an article (this takes a little): <input name="url" type ="text" /><br>
+            Enter the url of an article (this takes a little while): <input name="url" type ="text" /><br>
             <input type ="submit" value="submit" />
         </ul>
       </form>

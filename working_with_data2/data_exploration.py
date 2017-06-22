@@ -389,7 +389,7 @@ def mood_plots_by_site(topic_dict):
         p4 = plt.bar(ind, fear_tones, width, color='purple', bottom=sadness_tones+disgust_tones+anger_tones)
         p5 = plt.bar(ind, joy_tones, width, color='yellow', bottom=sadness_tones+disgust_tones+anger_tones+fear_tones)
 
-        plt.xlabel('Article')
+        plt.xlabel('Source')
         plt.xticks(ind, np.unique(topic_dict[topic]['source']), rotation=40)
         plt.ylabel('Scores')
         plt.title('Stacked Mood Scores by Site for Topic '+str(topic))
